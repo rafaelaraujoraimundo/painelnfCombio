@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>combio</groupId>
+    <artifactId>painelnfcombio</artifactId>
+    <version>${revision}${changelist}</version>
+    <packaging>war</packaging>
+
+    <name>Painel de Nota Fiscal - Combio</name>
+    <description>Painel de Nota Fiscal - Combio</description>
+
+    <build>
+        <finalName>${project.artifactId}</finalName>
+         <plugins>
+	<plugin>
+		<groupId>com.github.eirslett</groupId>
+		<artifactId>frontend-maven-plugin</artifactId>
+		<executions>
+			<execution>
+				<id>install node and npm</id>
+				<goals>
+					<goal>install-node-and-npm</goal>
+				</goals>
+				<phase>generate-resources</phase>
+			</execution>
+			<execution>
+				<id>npm install</id>
+				<goals>
+					<goal>npm</goal>
+				</goals>
+				<configuration>
+					<arguments>install</arguments>
+				</configuration>
+			</execution>
+			<execution>
+				<id>npm run</id>
+				<goals>
+					<goal>npm</goal>
+				</goals>
+				<configuration>
+					<arguments>run build-prod</arguments>
+				</configuration>
+			</execution>
+		</executions>
+		<configuration>
+			<nodeVersion>v18.18.0</nodeVersion>
+			<workingDirectory>src/main/angular-app</workingDirectory>
+		</configuration>
+	</plugin>
+</plugins>
+    </build>
+   
+
+
+</project>

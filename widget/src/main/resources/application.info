@@ -1,0 +1,17 @@
+application.type=widget
+application.code=painelnfcombio
+application.title=Painel de Nota Fiscal - Combio
+application.description=Painel de Nota Fiscal - Combio
+application.category=Combio
+application.renderer=freemarker
+application.icon=icon.png
+developer.code=RafaelAraujo
+developer.name=Rafael Araujo
+developer.url=http\://www.combio.com.br
+locale.file.base.name=widgetangular
+simple.deploy=true
+view.file=view.ftl
+edit.file=edit.ftl
+application.mobileapp=false
+application.uiwidget=true
+
