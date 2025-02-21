@@ -1,0 +1,67 @@
+<html>
+
+<head>
+    <link type="text/css" rel="stylesheet" href="/style-guide/css/fluig-style-guide.min.css" />
+    <script type="text/javascript" src="/portal/resources/js/jquery/jquery.js"></script>
+    <script type="text/javascript" src="/portal/resources/js/jquery/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="/portal/resources/js/mustache/mustache-min.js"></script>
+    <script type="text/javascript" src="/style-guide/js/fluig-style-guide.min.js" charset="utf-8"></script>
+</head>
+
+<body>
+    <div class="fluig-style-guide">
+        <h2>Solicital</h2>
+        <form name="form" role="form">
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        <b>Solicitação de férias</b>
+                    </h3>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <!-- Nome do funcionário -->
+                        <div class="form-group">
+                            <label for="requester_name">Nome do funcionário</label>
+                            <input type="text" class="form-control" id="requester_name" name="requester_name"
+                                placeholder="Digite seu nome completo" readonly>
+                        </div>
+
+                        <!-- Email do funcionário -->
+                        <div class="form-group">
+                            <label for="requester_mail">E-mail do funcionário</label>
+                            <input type="email" class="form-control" id="requester_mail" name="requester_mail"
+                                placeholder="aluno@email.com">
+                        </div>
+
+                        <!-- Abono salarial -->
+                        <div class="form-group">
+                            <label>Abono salarial (vender 10 dias)</label><br>
+                            <label class="radio-inline">
+                                <input type="radio" name="requesterAllowance" value="sim"> Sim
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" name="requesterAllowance" value="nao"> Não
+                            </label>
+                        </div>
+
+                        <!-- Quantidade de dias -->
+                        <div class="form-group">
+                            <label for="requester_days">Quantidade de dias</label>
+                            <select class="form-control" id="requester_days" name="requester_days">
+                                <option value="5">5</option>
+                                <option value="10">10</option>
+                                <option value="15">15</option>
+                                <option value="20">20</option>
+                                <option value="25">25</option>
+                                <option value="30">30</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</body>
+
+</html>
