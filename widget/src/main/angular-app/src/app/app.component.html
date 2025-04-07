@@ -1,0 +1,425 @@
+<po-loading-overlay
+  [hidden]="bLoading"
+  [p-screen-lock]="true"
+  p-size="string"
+  p-text="Buscando Dados da API"
+>
+</po-loading-overlay>
+
+<po-page-default>
+  <div class="po-row">
+    <div class="po-mt-2 po-md-12 po-sm-12 po-text-center green-background">
+      <font class="po-font-title">Recebimento de Notas Fiscais Datasul X Geniality</font>
+    </div>
+         <div class="po-offset-lg-11 po-offset-xl-11 po-xl-4 po-lg-4 po-md-6 po-sm-12">
+      <po-tag p-value="Versão 1.7.4"> </po-tag>
+    </div>
+  </div>
+  <div class="po-mb-2 po-input">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="po-row po-input">
+      <!-- Código Estabelecimento Início -->
+      <div class="po-md-2 po-sm-12">
+        <po-combo
+          name="filial"
+          [p-disabled]="allFieldsDisabled"
+          p-label="Estabelecimento Início"
+          [p-options]="filialOptions"
+          formControlName="cod-estabel-ini"
+          required
+        >
+        </po-combo>
+      </div>
+
+      <!-- Código Estabelecimento Fim -->
+      <div class="po-md-2 po-sm-12">
+        <po-combo
+          name="filial"
+          [p-disabled]="allFieldsDisabled"
+          p-label="Estabelecimento Fim"
+          [p-options]="filialOptions"
+          formControlName="cod-estabel-fim"
+          required
+        >
+        </po-combo>
+      </div>
+
+      <!-- Data Início -->
+      <div class="po-md-2 po-sm-12">
+        <po-datepicker
+          p-label="Data Início"
+          [p-disabled]="allFieldsDisabled ? 'true' : 'false'"
+          formControlName="data-ini"
+          p-required="true"
+          p-format="dd/mm/yyyy"
+        ></po-datepicker>
+      </div>
+
+      <!-- Data Fim -->
+      <div class="po-md-2 po-sm-12">
+        <po-datepicker
+          p-label="Data Fim"
+          formControlName="data-fim"
+          [p-disabled]="allFieldsDisabled ? 'true' : 'false'"
+          p-required="true"
+          p-format="dd/mm/yyyy"
+        ></po-datepicker>
+      </div>
+      <div class="po-md-2 po-sm-12 po-mt-4">
+        <po-button
+          p-label="Mostrar/Ocultar Campos Extras"
+          (p-click)="showExtraFields = !showExtraFields"
+        ></po-button>
+      </div>
+    
+    <div class="po-md-2 po-sm-12 po-mt-4">
+    <a href="https://combioenergia.fluig.cloudtotvs.com.br/portal/p/1/importador_xml_datasul"
+    target="_blank"
+    style="font-size: 12px; text-decoration: underline;">
+   Importar XML para o Datasul
+      </a>
+    </div>
+  </div>
+    <div class="po-row">
+      <!-- Número Nota Início -->
+      <div class="po-md-1 po-sm-12" *ngIf="showExtraFields">
+        <po-input
+          p-label="NF Início"
+          [p-disabled]="allFieldsDisabled ? 'true' : 'false'"
+          formControlName="nro-nota-ini"
+        ></po-input>
+      </div>
+
+      <!-- Número Nota Fim -->
+      <div class="po-md-1 po-sm-12" *ngIf="showExtraFields">
+        <po-input
+          p-label="NF Fim"
+          formControlName="nro-nota-fim"
+          [p-disabled]="allFieldsDisabled ? 'true' : 'false'"
+          p-mask="ZZZZZZZZZZZZZ"
+        ></po-input>
+      </div>
+
+      <!-- Série Início -->
+      <div class="po-md-1 po-sm-12" *ngIf="showExtraFields">
+        <po-input
+          p-label="Série Início"
+          [p-disabled]="allFieldsDisabled ? 'true' : 'false'"
+          formControlName="serie-ini"
+        ></po-input>
+      </div>
+
+      <!-- Série Fim -->
+      <div class="po-md-1 po-sm-12" *ngIf="showExtraFields">
+        <po-input
+          p-label="Série Fim"
+          formControlName="serie-fim"
+          [p-disabled]="allFieldsDisabled ? 'true' : 'false'"
+          p-mask="ZZZ"
+        ></po-input>
+      </div>
+
+      <!-- Código Emitente Início -->
+      <div class="po-md-1 po-sm-12" *ngIf="showExtraFields">
+        <po-number
+          p-label="Emit. Início"
+          [p-disabled]="allFieldsDisabled ? 'true' : 'false'"
+          formControlName="cod-emitente-ini"
+        ></po-number>
+      </div>
+
+      <!-- Código Emitente Fim -->
+      <div class="po-md-1 po-sm-12" *ngIf="showExtraFields">
+        <po-number
+          p-label="Emit. Fim"
+          formControlName="cod-emitente-fim"
+          [p-disabled]="allFieldsDisabled ? 'true' : 'false'"
+          p-min-value="0"
+          p-max-value="99999"
+        ></po-number>
+      </div>
+
+      <!-- Natureza Operação Início -->
+      <div class="po-md-1 po-sm-12" *ngIf="showExtraFields">
+        <po-input
+          p-label="Nat. Início"
+          [p-disabled]="allFieldsDisabled ? 'true' : 'false'"
+          formControlName="nat-operacao-ini"
+        ></po-input>
+      </div>
+
+      <!-- Natureza Operação Fim -->
+      <div class="po-md-1 po-sm-12" *ngIf="showExtraFields">
+        <po-input
+          p-label="Nat. Fim"
+          [p-disabled]="allFieldsDisabled ? 'true' : 'false'"
+          formControlName="nat-operacao-fim"
+          p-mask="ZZZZZZZZ"
+        ></po-input>
+      </div>
+    </div>
+    <div class="po-row">
+      <!-- Código Chave Acesso NF -->
+      <div class="po-md-4 po-sm-12">
+        <po-input
+          p-label="Código Chave Acesso NF"
+          formControlName="cod-chave-acesso-nf"
+        ></po-input>
+      </div>
+
+      <!-- Usa Chave de Acesso NF? -->
+      <div class="po-md-2 po-sm-12 po-mt-5">
+        <po-checkbox
+          p-label="Usa Chave de Acesso NF?"
+          formControlName="l-usa-chave-acesso-nf"
+          (p-change)="toggleFields($event)"
+        ></po-checkbox>
+      </div>
+    </div>
+    <div class="po-row po-mt-2">
+      <!-- Botão de Enviar -->
+      <div class="po-md-1 po-sm-4">
+        <po-button
+          p-label="Buscar"
+          p-type="submit"
+          (p-click)="onSubmit()"
+          [p-disabled]="!form.valid"
+        ></po-button>
+      </div>
+      <div class="po-md-4 po-sm-12 po-mt-1">
+        <po-checkbox
+          p-label="Somente exportar para Excel"
+          formControlName="l-export-excel"
+        ></po-checkbox>
+      </div>
+
+
+      <div class="po-md-6 po-sm-4">
+        <po-button
+          [p-disabled]="!bExportExcel"
+          p-label="Exportar para Excel"
+          (p-click)="exportToExcel()"
+        ></po-button>
+      </div>
+    </div>
+  </form>
+</div>
+  <div class="po-row po-m-5" *ngIf="showProgressBar">
+    <div class="po-md-11 po-sm-11">
+      <po-progress  p-text="Carregando Notas Fiscais" [p-show-percentage]="true" [p-value]="nProgressPercent"></po-progress>
+    </div>
+  </div>
+  <div class="po-row" *ngIf="showTotalNf">
+    <div class="po-col po-m-4">
+    <po-tag
+    [p-type]="type"
+    [p-value]="cTotalTag"
+  >
+  </po-tag>
+</div>
+  </div>
+
+  <po-table
+  [p-columns]="columns"
+  [p-items]="items"
+  p-hide-columns-manager="true"
+  >
+  <!-- Template para os detalhes -->
+  <ng-template p-table-column-template [p-property]="targetProperty" let-value>
+    <div>
+      <ng-container *ngIf="value !== 0; else noPedido">
+        <div class="po-row">
+          <div class="po-xl-12 po-lg-12 po-md-12 po-sm-12">
+            <po-button
+            p-label="Ped. Fornec"
+            (p-click)="openPedidoModal(value.erp_cod_estabel, value.erp_cod_emitente)">
+          </po-button>
+          </div>
+        </div>
+      </ng-container>
+      <!-- Template alternativo para caso o valor seja 0 -->
+      <ng-template #noPedido>
+        <span>Sem Pedido</span>
+      </ng-template>
+    </div>
+  </ng-template>
+
+  <ng-template p-table-column-template p-property="processoFluig" let-value let-row="row">
+    <ng-container *ngIf="value; else noProcesso">
+      <po-button
+        [p-label]="value"
+        p-type="primary"
+        (p-click)="abrirModalProcesso(value)"
+        p-size="small">
+      </po-button>
+    </ng-container>
+    <ng-template #noProcesso>
+      <span>-</span>
+    </ng-template>
+  </ng-template>
+
+  <ng-template p-table-column-template p-property="reprocessa" let-value>
+    <div>
+      <ng-container >
+        <div class="po-row">
+          <div class="po-xl-12 po-lg-12 po-md-12 po-sm-12">
+            <po-button
+            p-label="Reprocessar"
+            (p-click)="confirmarReprocessamento(value.id)">
+          </po-button>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </ng-template>
+</po-table>
+
+<po-modal #modal p-title="Detalhes do Pedido">
+  <div *ngIf="modalDataAprovacao.length > 0; else noData">
+    <div
+      *ngFor="let item of modalDataAprovacao"
+      class="approval-card"
+      [ngClass]="{'approved': item.desc_situacao === 'Aprovado', 'not-approved': item.desc_situacao !== 'Aprovado'}"
+    >
+      <p><strong>Situação:</strong> {{ item.desc_situacao }}</p>
+      <p><strong>Usuário:</strong> {{ item.nome_usuar }}</p>
+      <p><strong>Geração:</strong> {{ item.dt_geracao | date:'dd/MM/yyyy' }}</p>
+      <p><strong>Aprovação:</strong> {{ item.dt_aprova | date:'dd/MM/yyyy' }}</p>
+      <p><strong>Valor:</strong> {{ item.valor_doc | currency:'BRL' }}</p>
+    </div>
+  </div>
+  <ng-template #noData>
+    <p>Nenhum detalhe encontrado para o pedido.</p>
+  </ng-template>
+</po-modal>
+
+<po-modal #modalPedidos p-size="lg" p-title="Detalhes do Pedido">
+  <div *ngIf="modalData.length > 0; else noData">
+    <table class="po-table" style="width: 100%; border-collapse: collapse; border-spacing: 0;">
+      <tbody>
+        <!-- Exibe cada pedido e logo abaixo seus detalhes -->
+        <ng-container *ngFor="let pedido of modalData">
+          <!-- Linha principal do pedido em formato horizontal -->
+          <tr>
+            <td colspan="5" style="padding: 16px;">
+              <div style="display: flex; justify-content: space-between; flex-wrap: wrap;">
+                <p><strong>Pedido:</strong> {{ pedido.NumPedido }}</p>
+                <p><strong>Estabelecimento:</strong> {{ pedido.CodEstabel }}</p>
+                <p><strong>Fornecedor:</strong> {{ pedido.NomeAbrev }}</p>
+                <p><strong>Valor Documento:</strong> {{ pedido.ValorDoc | currency:'BRL' }}</p>
+                <p><strong>Saldo:</strong> {{ pedido.ValorSaldo | currency:'BRL' }}</p>
+              </div>
+            </td>
+          </tr>
+          <!-- Linhas dos detalhes do pedido -->
+          <tr>
+            <td colspan="5" style="padding-left: 16px;">
+              <table style="width: 100%; border-collapse: collapse; margin-top: 8px;">
+                <thead>
+                  <tr style="background-color: #f1f1f1;">
+                    <th>Situação</th>
+                    <th>Usuário</th>
+                    <th>Data de Geração</th>
+                    <th>Data de Aprovação</th>
+                    <th>Valor</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    *ngFor="let detalhe of pedido.detalhes"
+                    [ngClass]="{ 'approved': detalhe.Situacao === 'Aprovado', 'not-approved': detalhe.Situacao !== 'Aprovado' }"
+                  >
+                    <td>{{ detalhe.Situacao }}</td>
+                    <td>{{ detalhe.Usuario }}</td>
+                    <td>{{ detalhe.DataGeracao | date:'dd/MM/yyyy' }}</td>
+                    <td>{{ detalhe.DataAprovacao | date:'dd/MM/yyyy' }}</td>
+                    <td>{{ detalhe.ValorDoc | currency:'BRL' }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </table>
+  </div>
+  <ng-template #noData>
+    <p>Nenhum detalhe encontrado para os pedidos.</p>
+  </ng-template>
+
+  <ng-template #noData>
+    <p>Nenhum detalhe encontrado para os pedidos.</p>
+  </ng-template>
+  <ng-template #noData>
+    <p>Nenhum detalhe encontrado para os pedidos.</p>
+  </ng-template>
+</po-modal>
+
+<po-modal #modalReprocessa p-size="lg"
+          p-title="Retorno reprocessamento"
+          (p-close)="onSubmit()">
+  <div *ngIf="modalDataReprocessa.length > 0; else noData">
+    <table class="po-table" style="width: 100%; border-collapse: collapse; border-spacing: 0;">
+      <tbody>
+        <ng-container *ngFor="let retReprocess of modalDataReprocessa">
+          <tr>
+            <td colspan="5" style="padding: 16px;">
+              <div style="display: flex; justify-content: space-between; flex-wrap: wrap;">
+                <p><strong>Tipo:</strong> {{ retReprocess.type }}</p>
+              </div>
+            </td>
+            <td colspan="5" style="padding: 16px;">
+              <div style="display: flex; justify-content: space-between; flex-wrap: wrap;">
+                <p><strong>Cod.:</strong> {{ retReprocess.code }}</p>
+              </div>
+            </td>
+            <td colspan="5" style="padding: 16px;">
+              <div style="display: flex; justify-content: space-between; flex-wrap: wrap;">
+                <p><strong>Descrição:</strong> {{ retReprocess.description }}</p>
+              </div>
+            </td>
+            <td colspan="5" style="padding: 16px;">
+              <div style="display: flex; justify-content: space-between; flex-wrap: wrap;">
+                <p><strong>Detalhe:</strong> {{ retReprocess.details }}</p>
+              </div>
+            </td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </table>
+  </div>
+</po-modal>
+
+<po-modal #modalProcessoFluig p-title="Detalhes do Processo Fluig" p-size="md">
+  <div *ngIf="loadingProcesso">
+    <po-loading p-label="Buscando dados do processo..."></po-loading>
+  </div>
+
+  <div *ngIf="processoFluigAtivo && !loadingProcesso" class="modal-content">
+    <div class="info-bloco">
+      <p><strong>Processo:</strong> {{ modalProcessoFluigValue }}</p>
+      <p><strong>Descrição:</strong> {{ processoFluigAtivo.processDescription }}</p>
+      <p><strong>Etapa Atual:</strong> {{ processoFluigAtivo.stateName }}</p>
+      <p><strong>Responsável:</strong> {{ processoFluigAtivo.nomeResponsavel }}</p>
+      <p><strong>Status SLA:</strong> {{ processoFluigAtivo.slaStatus }}</p>
+      <p><strong>Início do Processo:</strong> {{ processoFluigAtivo.startDate | date:'dd/MM/yyyy HH:mm' }}</p>
+      <p><strong>Início da Atribuição:</strong> {{ processoFluigAtivo.assignStartDate | date:'dd/MM/yyyy HH:mm' }}</p>
+      <p><strong>Data de Alerta:</strong> {{ processoFluigAtivo.warningDate | date:'dd/MM/yyyy HH:mm' }}</p>
+    </div>
+
+    <div class="modal-actions">
+      <po-button
+        p-label="Abrir no Fluig"
+        p-type="danger"
+        p-icon="po-icon-link"
+        (p-click)="abrirLinkFluig(modalProcessoFluigValue)">
+      </po-button>
+    </div>
+  </div>
+
+  <div *ngIf="!processoFluigAtivo && !loadingProcesso">
+    <p>Nenhuma tarefa ativa encontrada para esse processo.</p>
+  </div>
+</po-modal>
+
+</po-page-default>
