@@ -1,0 +1,58 @@
+po-table table {
+  width: 100%;
+  table-layout: auto; // Permite que colunas se ajustem conforme o conteúdo
+  border-collapse: collapse;
+}
+
+po-table th, po-table td {
+  padding: 8px;
+  text-align: left;
+  vertical-align: top;
+  min-width: 100px; // Evita colunas extremamente pequenas
+}
+
+/* Estilo para manter a integridade do conteúdo */
+po-table th div,
+po-table td div,
+po-table th span,
+po-table td span {
+  word-break: break-word !important;
+  white-space: normal !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis;
+  font-size: 12px !important;
+  line-height: 1.2;
+}
+
+/* Responsividade para telas menores */
+@media screen and (max-width: 768px) {
+  po-table {
+    display: block;
+    overflow-x: auto;
+  }
+
+  po-table table {
+    width: 100%;
+    min-width: 800px; // Para garantir legibilidade horizontal mesmo em mobile
+  }
+
+  po-table th, po-table td {
+    font-size: 10px !important;
+    padding: 4px 2px;
+  }
+}
+
+/* Efeito visual no hover */
+po-table tr:hover th,
+po-table tr:hover td {
+  color: #FFFFFF;
+  background-color: #4caf50;
+}
+
+.po-input {
+  --font-size: 12px !important;
+}
+
+po-combo {
+  --font-size: 12px !important;
+}
