@@ -1,48 +1,190 @@
-.green-background {
-    background-color: #116533 !important;;
-    color: white;
+/* ===================================================================
+   ESTILO DE FUNDO VERDE UTILIZADO EM CABEÇALHOS OU ÁREAS DE DESTAQUE
+   =================================================================== */
+   .green-background {
+    background-color: #116533 !important;  /* Verde escuro aplicado com prioridade */
+    color: white;                          /* Texto branco */
   }
-
-.custom-green-background {
-    background-color: #399444 !important; /* Uso de !important para garantir a aplicação em componentes com estilos predefinidos */
+  
+  /* ===================================================================
+     VARIANTE DE VERDE PERSONALIZADA, PODE SER USADA PARA CARDS OU BOTÕES
+     =================================================================== */
+  .custom-green-background {
+    background-color: #399444 !important;  /* Verde médio */
   }
-
+  
+  /* ===================================================================
+     CLASSE PARA FORÇAR A COR DO TEXTO PARA BRANCO
+     =================================================================== */
   .custom-white-font {
     color: white;
   }
-
+  
+  /* ===================================================================
+     PREVENÇÃO DE SCROLL HORIZONTAL NO FORMULÁRIO
+     =================================================================== */
+  form {
+    overflow-x: hidden;
+  }
+  
+  /* ===================================================================
+     ESTILO BASE PARA CARDS DE APROVAÇÃO
+     =================================================================== */
   .approval-card {
-    padding: 15px;
-    margin: 10px 0;
-    border-radius: 8px;
-    color: white;
-    font-size: 14px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 15px;                                 /* Espaçamento interno */
+    margin: 10px 0;                                /* Espaçamento vertical entre os cards */
+    border-radius: 8px;                            /* Bordas arredondadas */
+    color: white;                                  /* Texto branco (cuidado com fundos claros) */
+    font-size: 14px;                               /* Tamanho padrão da fonte */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);       /* Sombra leve */
   }
-
+  
+  /* ===================================================================
+     VARIAÇÕES DE FUNDO PARA STATUS DE APROVAÇÃO
+     =================================================================== */
   .approved {
-    background-color: #4caf50; /* Verde */
+    background-color: #b0cbf9; /* Azul claro para aprovado */
   }
-
+  
   .not-approved {
-    background-color: #f44336; /* Vermelho */
+    background-color: #f49595; /* Vermelho claro para não aprovado */
   }
-
-  po-button {
-
-
-    --font-size: 12px;
-
-
-
+  
+  /* ===================================================================
+     ESTILO PADRÃO APLICADO A TODOS OS BOTÕES CUSTOMIZADOS
+     =================================================================== */
+  ::ng-deep .botao-padrao .po-button {
+    width: 200px !important;                /* Largura fixa */
+    font-size: 12px;                        /* Fonte menor */
+    text-align: center;                     /* Centraliza o texto */
+    transition: background-color 0.3s ease; /* Suaviza o hover */
+    color: white !important;                /* Força o texto branco */
   }
-
+  
+  /* === BOTÃO BUSCAR COM FUNDO VERDE ESCURO === */
+  ::ng-deep .botao-buscar .po-button {
+    background-color: #116533 !important;
+  }
+  
+  ::ng-deep .botao-buscar .po-button:hover {
+    background-color: #0c4a29 !important;
+    cursor: pointer;
+  }
+  
+  /* === BOTÃO EXPORTAR COM FUNDO AZUL === */
+  ::ng-deep .botao-exportar .po-button {
+    background-color: #007bff !important;
+  }
+  
+  ::ng-deep .botao-exportar .po-button:hover {
+    background-color: #0056b3 !important;
+    cursor: pointer;
+  }
+  
+  /* ===================================================================
+     BOTÃO OLHO AZUL — USADO PARA AÇÃO DE VISUALIZAR
+     =================================================================== */
+  ::ng-deep .botao-olho-icon .po-button {
+    background-color: #bbdefb !important;  /* Azul clarinho */
+    color: #1565c0 !important;             /* Azul mais forte no texto/ícone */
+    border: none;
+    transition: background-color 0.3s ease;
+  }
+  
+  ::ng-deep .botao-olho-icon .po-button:hover {
+    background-color: #e3f2fd !important;  /* Hover azul suave */
+    cursor: pointer;
+  }
+  
+  ::ng-deep .botao-olho-icon .po-button .po-icon {
+    font-size: 20px !important;            /* Ícone maior para destaque */
+    line-height: 1;
+  }
+  
+  /* ===================================================================
+     BOTÃO INICIAR ROSA — USADO PARA AÇÃO DE REPROCESSAR
+     =================================================================== */
+  ::ng-deep .botao-rosa-texto .po-button {
+    background-color: #f06292 !important;  /* Rosa médio */
+    color: #fff !important;
+    border: none;
+    transition: background-color 0.3s ease;
+  }
+  
+  ::ng-deep .botao-rosa-texto .po-button:hover {
+    background-color: #f48fb1 !important;  /* Rosa claro no hover */
+    cursor: pointer;
+  }
+  
+  /* ===================================================================
+     BOTÃO PROCESSO VERDE — PARA PROCESSOS FLUIG
+     =================================================================== */
+  ::ng-deep .botao-processo-verde .po-button {
+    background-color: #91df94 !important;  /* Verde suave */
+    color: #2e7d32 !important;             /* Verde escuro para texto */
+    border: none;
+    transition: background-color 0.3s ease;
+  }
+  
+  ::ng-deep .botao-processo-verde .po-button:hover {
+    background-color: #d3e4d3 !important;  /* Hover verde mais claro */
+    color: #1b5e20 !important;
+    cursor: pointer;
+  }
+  
+  /* ===================================================================
+     ESTILO PARA CHECKBOX REDUZIDO E PERSONALIZADO
+     =================================================================== */
+  
+  /* Tamanho do texto do label do checkbox */
+  ::ng-deep .estilo-checkbox .po-checkbox-label {
+    font-size: 12px !important;
+  }
+  
+  /* Redução do tamanho do checkbox em si */
+  ::ng-deep .estilo-checkbox .po-checkbox {
+    transform: scale(0.70);
+  }
+  
+  /* Cor da caixa quando marcada */
+  ::ng-deep .estilo-checkbox .po-checkbox input[type="checkbox"]:checked + .po-checkbox-icon {
+    background-color: #116533 !important;
+    border-color: #116533 !important;
+  }
+  
+  /* Cor da borda quando desmarcada */
+  ::ng-deep .estilo-checkbox .po-checkbox input[type="checkbox"] + .po-checkbox-icon {
+    border: 1px solid #116533 !important;
+  }
+  
+  /* ===================================================================
+     LINK \"Importar XML\" — estilo leve com hover amigável
+     =================================================================== */
+  .link-importar-xml {
+    font-size: 13px;
+    color: #116533;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease, text-decoration 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+  }
+  
+  .link-importar-xml:hover {
+    color: #0c4a29;
+    text-decoration: underline;
+  }
+  
+  /* ===================================================================
+     AJUSTE GLOBAL NO TAMANHO DE FONTE DOS INPUTS PO-UI
+     =================================================================== */
   po-input {
     --font-size: 12px;
   }
-
   
-
+  /* ===================================================================
+     MODAL DE DETALHES DO FLUIG — ORGANIZAÇÃO INTERNA
+     =================================================================== */
   .modal-content {
     padding: 16px 0;
   
@@ -57,3 +199,4 @@
       justify-content: flex-start;
     }
   }
+  

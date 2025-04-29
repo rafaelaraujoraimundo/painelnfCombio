@@ -17,13 +17,13 @@ httpOptions: any;
         private http: HttpClient,
       ) { this.httpOptions = environment.development ? {
         headers: new HttpHeaders({
-          'Authorization': 'Bearer eyJraWQiOiI1OGM3NjQzZi03NTQwLTQ4Y2YtOGVhYy01NDhiM2I4MGYxOTMiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJyYWZhZWwuYXJhdWpvIiwicm9sZSI6InVzZXIsYWRtaW4iLCJ0ZW5hbnQiOjEsInVzZXJUZW5hbnRJZCI6NDQ3LCJzaXRlQ29kZSI6IkZsdWlnIiwic2l0ZUlkIjoxLCJ1c2VyVHlwZSI6MCwidXNlclVVSUQiOiJjNWViZmI2Yy0xZDA2LTQyNDMtYjMxZi1iZTkwOGJlNjY5NjciLCJ0ZW5hbnRVVUlEIjoiNThjNzY0M2YtNzU0MC00OGNmLThlYWMtNTQ4YjNiODBmMTkzIiwibGFzdFVwZGF0ZURhdGUiOjE3Mzk0NDg0ODgwMDAsInVzZXJUaW1lWm9uZSI6IkFtZXJpY2EvU2FvX1BhdWxvIiwiZXhwIjoxNzQ0MDUwNTkwLCJpYXQiOjE3NDQwNDkzOTAsImF1ZCI6ImZsdWlnX2F1dGhlbnRpY2F0b3JfcmVzb3VyY2UifQ.hHdSSZbdG6YsTPp9HpC9MUjNTLpeL_WU-wnl17Bc-7LMKlUDAHufPz0TO-FKfFU5LJAaeWMzGQ6r042dfZB8wJVKAqks1UgzFrWQVMJsmKxsXcpHqmvzU2k_SEIdDXCISEUcL6FyVhu_OKSyipiZkgbXYQ3ngTu7-p0pFgBOxCJwkqIj5wy3xfdDeQuYS6Y56xOEpe1z_BUgIWALa022-pvG-Fu9IIR86iwt1uNV1ZmPHBQJRCFhC_u-tYsXMFXTLTLW9B_NLjo1CckW7X9yLbV-1x1tzW_sJehIrxZhTKmtSOCbMxjZyaEks4bny3ul6f_i75mkyzCcZUImkPHPZg',
+          'Authorization': 'Bearer eyJraWQiOiI1OGM3NjQzZi03NTQwLTQ4Y2YtOGVhYy01NDhiM2I4MGYxOTMiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJyYWZhZWwuYXJhdWpvIiwicm9sZSI6InVzZXIsYWRtaW4iLCJ0ZW5hbnQiOjEsInVzZXJUZW5hbnRJZCI6NDQ3LCJzaXRlQ29kZSI6IkZsdWlnIiwic2l0ZUlkIjoxLCJ1c2VyVHlwZSI6MCwidXNlclVVSUQiOiJjNWViZmI2Yy0xZDA2LTQyNDMtYjMxZi1iZTkwOGJlNjY5NjciLCJ0ZW5hbnRVVUlEIjoiNThjNzY0M2YtNzU0MC00OGNmLThlYWMtNTQ4YjNiODBmMTkzIiwibGFzdFVwZGF0ZURhdGUiOjE3Mzk0NDg0ODgwMDAsInVzZXJUaW1lWm9uZSI6IkFtZXJpY2EvU2FvX1BhdWxvIiwiZXhwIjoxNzQ1OTUzMjU2LCJpYXQiOjE3NDU5NTIwNTYsImF1ZCI6ImZsdWlnX2F1dGhlbnRpY2F0b3JfcmVzb3VyY2UifQ.po4tcn4MpAjWOe-mnX9S-OpLJdEwLHWPSS1PcKTyUnZf01VSKBlNgB8qQv-aVg5F22cV2QJq2-QZMQr6ISFf8rWebPEKyUqjEP0X33di-H6JTCPk0jxp_7Sqqq94ovLKrzhQOxGP7nPb3qY-EUHsZzEmVmn6FQy2kunRSANNNQaXsiTd86bRa_sETqtIbmjRE4tZqsz9l2ZUXCxorPiTfBDcIMsBhyU1kn24DCljl0Wr-G0v2tefTJ_fdRrYWriZoIm9TdMr54c0QumI-Kw68CJBfdYBB570IGwJ4toTpAXk2Dt9YcG8XLSGCZIg0YJAf7hK9FdHItBLpYjgFzjIQA',
         })
       } : undefined; }
 
 
   public getDataset(dataset: string, filial?:string, dataIni?: Date, dataFim?: Date): Observable<any> {
-        const url = '/api/public/ecm/dataset/datasets/';
+        const url = '/api/public/ecm/dataset/datasets';
 
         if (dataset == 'ds_estabelecimento'){
           this.body = {
@@ -57,7 +57,11 @@ httpOptions: any;
         }
         }
 
-        return this.http.post(url, this.body, this.httpOptions);
+        return this.http.post(url, this.body, this.httpOptions );
+      }
+      consultarProcessos(chaveNF: string): Observable<any> {
+        const url = `/process-management/api/v2/processes/recebimento_facil_wf/requests?age=1&pageSize=10&expand=requester&expand=formFields&formFields=v_nf_chave:${chaveNF}`;          
+        return this.http.get<any>(url, this.httpOptions);
       }
 
 
@@ -204,6 +208,8 @@ httpOptions: any;
         saveAs(data, fileName + '_export_' + new Date().getTime() + EXCEL_EXTENSION);
       }
 
+ 
+
 
       getColumns(): Array<PoTableColumn> {
         const airfareDetail: PoTableDetail = {
@@ -312,6 +318,11 @@ httpOptions: any;
 
       public getProcessoAtivo(processInstanceId: string): Observable<any> {
         const url = `/process-management/api/v2/processes/recebimento_facil_wf/requests/tasks?expand=taskInfo&processInstanceId=${processInstanceId}`;
+        return this.http.get(url, this.httpOptions);
+      }
+
+      public getProcessoFinalizado(processInstanceId: string): Observable<any> {
+        const url = `/process-management/api/v2/processes/recebimento_facil_wf/requests?processInstanceId=${processInstanceId}`;
         return this.http.get(url, this.httpOptions);
       }
 
