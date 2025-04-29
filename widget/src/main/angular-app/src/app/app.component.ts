@@ -10,7 +10,13 @@ import {
 } from '@po-ui/ng-components';
 import { EstabCentroCusto } from './interfaces/estabCentroCusto';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { finalize } from 'rxjs';
 
+interface Processo {
+  processInstanceId: number;
+  active: boolean;
+  // adicione outras propriedades conforme necessário
+}
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -21,7 +27,8 @@ export class AppComponent implements OnInit {
   @ViewChild('modalPedidos') modalPedidos!: PoModalComponent;
   @ViewChild('modalReprocessa') modalReprocessa!: PoModalComponent;
   @ViewChild('modalProcessoFluig') modalProcessoFluig!: PoModalComponent;
-  
+  processoFinalizado: { processInstanceId: number; processDescription: string; status: string } | null = null;
+  chaveNF: string = '';
   form!: FormGroup;
   targetProperty= 'pedido';
   bLoading: boolean = true;
@@ -71,7 +78,39 @@ export class AppComponent implements OnInit {
             stateName: tarefa.state?.stateName // 👈 adiciona aqui!
           };
         } else {
-          this.poNotification.warning('Nenhuma tarefa ativa encontrada.');
+          // não havia tarefa ativa → buscar histórico finalizado
+          this.fluigService.getProcessoFinalizado(processo).subscribe({
+            next: fin => {
+              const proc = fin.items[0];
+              if (proc) {
+
+                let statusTrad: string;
+                switch (proc.status) {
+                  case 'FINALIZED':
+                    statusTrad = 'FINALIZANDO';
+                    break;
+                  case 'CANCELED':
+                    statusTrad = 'CANCELADO';
+                    break;
+                  default:
+                    statusTrad = proc.status;
+                }
+                this.processoFinalizado = {
+                  processInstanceId: proc.processInstanceId,
+                  processDescription: proc.processDescription,
+                  status: statusTrad
+                };
+              } else {
+                this.poNotification.warning('Nenhum processo encontrado.');
+              }
+              this.loadingProcesso = false;
+              this.modalProcessoFluig.open();
+            },
+            error: errFin => {
+              this.poNotification.error('Erro ao buscar processo finalizado.');
+              this.loadingProcesso = false;
+            }
+          });
         }
         this.loadingProcesso = false;
         this.modalProcessoFluig.open();
@@ -83,12 +122,46 @@ export class AppComponent implements OnInit {
     });
   }
   
-  confirmarReprocessamento(id: string): void {
-    this.poDialog.confirm({
-      title: 'Confirmação',
-      message: `Deseja reprocessar a Nota Fiscal com ID ${id}?`,
-      confirm: () => this.nfReprocess(id)
-    });
+  confirmarReprocessamento(notaId: string): void {
+    this.chaveNF = this.form.get('cod-chave-acesso-nf')!.value;
+    this.bLoading = true;
+  
+    this.fluigService.consultarProcessos(this.chaveNF)
+      .pipe(finalize(() => this.bLoading = true))
+      .subscribe(
+        response => {
+          const processoAtivo: Processo = response.items.find((item: Processo) => item.active === true);
+  
+          if (processoAtivo) {
+            // Se existe processo ativo, exibe modal com aviso
+            this.modalDataReprocessa = [{
+              type: 'Aviso',
+              code: 'Processo Ativo',
+              description: `Já existe processo ativo de número ${processoAtivo.processInstanceId}.`,
+              details: 'Não é permitido reprocessar este item.'
+            }];
+            this.modalReprocessa.open();
+          } else {
+            // Se não existe processo ativo, abre o PoDialog de confirmação
+            this.poDialog.confirm({
+              title: 'Reprocessamento',
+              message: 'Nenhum processo ativo encontrado. Deseja confirmar o reprocessamento?',
+              confirm: () => { 
+                // O que acontece ao clicar em “Sim”
+                this.nfReprocess(notaId);
+              },
+              cancel: () => {
+                this.bLoading = true;
+                // O que acontece ao clicar em “Cancelar”
+                // Normalmente, não fazemos nada, somente fechar o modal
+              }
+            });
+          }
+        },
+        error => {
+          console.error("Erro ao consultar a API:", error);
+        }
+      );
   }
 
   constructor(
@@ -97,6 +170,7 @@ export class AppComponent implements OnInit {
     private poNotification: PoNotificationService,
     private formBuilder: FormBuilder,
     private poDialog: PoDialogService
+    
   ) {}
 
   ngOnInit() {
@@ -120,8 +194,8 @@ export class AppComponent implements OnInit {
     this.form = this.formBuilder.group({
       'cod-estabel-ini': ['101'],
       'cod-estabel-fim': ['101'],
-      'data-ini': [formatDate(firstDayOfMonth)], // Primeiro dia do mês
-      'data-fim': [formatDate(lastDayOfMonth)],  // Último dia do mês
+      'data-ini': [formatDate(firstDayOfMonth)],
+      'data-fim': [formatDate(lastDayOfMonth)],
       'nro-nota-ini': [''],
       'nro-nota-fim': ['ZZZZZZZZZZZZZ'],
       'serie-ini': [''],
@@ -131,7 +205,8 @@ export class AppComponent implements OnInit {
       'nat-operacao-ini': [''],
       'nat-operacao-fim': ['ZZZZZZZZ'],
       'cod-chave-acesso-nf': ['015147777700000285700000000000000003G1BCXJ2'],
-      'l-usa-chave-acesso-nf': [false],
+      // Inicialmente, se NÃO estiver em busca avançada, marca o campo "usa chave" como true:
+      'l-usa-chave-acesso-nf': [true],
       'l-export-excel': [false],
     });
 
@@ -298,12 +373,10 @@ export class AppComponent implements OnInit {
                 this.showProgressBar = false;
                 this.showTotalNf = true;
                 if (this.form.get('l-export-excel')?.value) {
-                  console.log('dentro da checkbox Exporta')
                   // Se estiver marcado, exporta para Excel e não exibe na tela
                   this.exportToExcel();
                   this.items = []; // Limpa os itens para não exibir na tela
                 } else {
-                  console.log('dentro do else checkbox Exporta')
                   // Se não estiver marcado, exibe os dados na tela
                   this.items = this.itemsResponse;
                   this.bExportExcel = true;
@@ -410,24 +483,19 @@ openPedidoModal(filial: string, codigoFornecedor: string) {
     this.totalExpanded = this.totalExpanded < 0 ? 0 : this.totalExpanded;
   }
 
-  nfReprocess(id: string){
-
+  nfReprocess(id: string) {
     this.bLoading = false;
-
+    
     this.fluigService.reprocessarNota(id).subscribe({
       next: (response) => {
-
         if (response?.content?.values) {
-
           this.modalDataReprocessa = response.content.values.map((retReprocess: any) => ({
             type: retReprocess.type,
             code: retReprocess.code,
             description: retReprocess.description,
             details: retReprocess.details
           }));
-
           this.modalReprocessa.open();
-
           this.bLoading = true;
         } else {
           this.bLoading = true;
@@ -440,8 +508,6 @@ openPedidoModal(filial: string, codigoFornecedor: string) {
         this.poNotification.error('Erro ao reprocessar NF.');
       },
     });
-
-
   }
 
 
@@ -460,4 +526,18 @@ openPedidoModal(filial: string, codigoFornecedor: string) {
     const url = `https://combioenergia.fluig.cloudtotvs.com.br/portal/p/1/pageworkflowview?app_ecm_workflowview_detailsProcessInstanceID=${processo}`;
     window.open(url, '_blank');
   }
+
+  toggleAdvancedSearch(event: any): void {
+    // Inverte o valor de showExtraFields
+    this.showExtraFields = !this.showExtraFields;
+  
+    if (this.showExtraFields) {
+      // Se a busca avançada foi ativada, marque "l-usa-chave-acesso-nf" como false para que apareçam os demais inputs.
+      this.form.patchValue({ 'l-usa-chave-acesso-nf': false });
+    } else {
+      // Caso contrário, desativa a busca avançada e mantém "usa chave" marcado (true)
+      this.form.patchValue({ 'l-usa-chave-acesso-nf': true });
+    }
+  }
+
 }

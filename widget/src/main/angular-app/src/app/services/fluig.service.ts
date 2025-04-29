@@ -23,7 +23,7 @@ httpOptions: any;
 
 
   public getDataset(dataset: string, filial?:string, dataIni?: Date, dataFim?: Date): Observable<any> {
-        const url = '/api/public/ecm/dataset/datasets/';
+        const url = '/api/public/ecm/dataset/datasets';
 
         if (dataset == 'ds_estabelecimento'){
           this.body = {
@@ -57,7 +57,11 @@ httpOptions: any;
         }
         }
 
-        return this.http.post(url, this.body, this.httpOptions);
+        return this.http.post(url, this.body, this.httpOptions );
+      }
+      consultarProcessos(chaveNF: string): Observable<any> {
+        const url = `/process-management/api/v2/processes/recebimento_facil_wf/requests?age=1&pageSize=10&expand=requester&expand=formFields&formFields=v_nf_chave:${chaveNF}`;          
+        return this.http.get<any>(url, this.httpOptions);
       }
 
 
@@ -204,6 +208,8 @@ httpOptions: any;
         saveAs(data, fileName + '_export_' + new Date().getTime() + EXCEL_EXTENSION);
       }
 
+ 
+
 
       getColumns(): Array<PoTableColumn> {
         const airfareDetail: PoTableDetail = {
@@ -312,6 +318,11 @@ httpOptions: any;
 
       public getProcessoAtivo(processInstanceId: string): Observable<any> {
         const url = `/process-management/api/v2/processes/recebimento_facil_wf/requests/tasks?expand=taskInfo&processInstanceId=${processInstanceId}`;
+        return this.http.get(url, this.httpOptions);
+      }
+
+      public getProcessoFinalizado(processInstanceId: string): Observable<any> {
+        const url = `/process-management/api/v2/processes/recebimento_facil_wf/requests?processInstanceId=${processInstanceId}`;
         return this.http.get(url, this.httpOptions);
       }
 
