@@ -15,9 +15,14 @@ httpOptions: any;
 
       constructor(
         private http: HttpClient,
-      ) { this.httpOptions = environment.development ? {
+      ) {
+        // Em dev (ng serve) o proxy encaminha para o Fluig e o Bearer vem do
+        // environment.development.ts (substituido no build de producao pelo
+        // environment.ts, sem token) - o WAR nunca carrega o token.
+        // Em producao, a sessao do Fluig autentica e httpOptions fica undefined.
+        this.httpOptions = environment.development ? {
         headers: new HttpHeaders({
-          'Authorization': 'Bearer ***REMOVED***',
+          'Authorization': (environment as any).fluigToken,
         })
       } : undefined; }
 
@@ -252,6 +257,27 @@ httpOptions: any;
         ];
       }
 
+      // Recebimento de biomassa vinculado pela chave de acesso da NF
+      // (ds_painel_recebimento_biomassa_novo v1.9.0+, filtro chaveAcesso).
+      public getBiomassaPorChave(chave: string): Observable<any> {
+        const url = '/api/public/ecm/dataset/datasets';
+        const payload = {
+          name: 'ds_painel_recebimento_biomassa_novo',
+          constraints: [
+            {
+              _field: 'chaveAcesso',
+              _initialValue: chave,
+              _finalValue: chave,
+              _type: 1,
+              _likeSearch: false,
+              fieldName: 'chaveAcesso'
+            }
+          ]
+        };
+
+        return this.http.post(url, payload, this.httpOptions);
+      }
+
       public getPedidoDetails(pedido: string): Observable<any> {
         const url = '/api/public/ecm/dataset/datasets';
         const payload = {
@@ -316,14 +342,34 @@ httpOptions: any;
         return this.http.post(url, payload, this.httpOptions);
       }
 
-      public getProcessoAtivo(processInstanceId: string): Observable<any> {
-        const url = `/process-management/api/v2/processes/recebimento_facil_wf/requests/tasks?expand=taskInfo&processInstanceId=${processInstanceId}`;
+      public getProcessoAtivo(processInstanceId: string, processName: string = 'recebimento_facil_wf'): Observable<any> {
+        const url = `/process-management/api/v2/processes/${processName}/requests/tasks?expand=taskInfo&processInstanceId=${processInstanceId}`;
         return this.http.get(url, this.httpOptions);
       }
 
-      public getProcessoFinalizado(processInstanceId: string): Observable<any> {
-        const url = `/process-management/api/v2/processes/recebimento_facil_wf/requests?processInstanceId=${processInstanceId}`;
+      public getProcessoFinalizado(processInstanceId: string, processName: string = 'recebimento_facil_wf'): Observable<any> {
+        const url = `/process-management/api/v2/processes/${processName}/requests?processInstanceId=${processInstanceId}`;
         return this.http.get(url, this.httpOptions);
+      }
+
+      // Solicitações de biomassa em lote (chave -> SOLICITACAO) para a coluna Fluig.
+      public getBiomassaSolicitacoes(chaves: string[]): Observable<any> {
+        const url = '/api/public/ecm/dataset/datasets';
+        const payload = {
+          name: 'ds_painel_recebimento_biomassa_novo',
+          constraints: [
+            {
+              _field: 'chaves',
+              _initialValue: JSON.stringify(chaves),
+              _finalValue: 'chaves',
+              _type: 1,
+              _likeSearch: false,
+              fieldName: 'chaves'
+            }
+          ]
+        };
+
+        return this.http.post(url, payload, this.httpOptions);
       }
 
 }

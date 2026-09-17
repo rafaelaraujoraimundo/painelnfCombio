@@ -20,14 +20,14 @@ p-text="Buscando Dados da API">
     <div class="po-container po-p-3" style="border: 1px solid #d4d2d2; border-radius: 4px;">
         <form [formGroup]="form" (ngSubmit)="onSubmit()">
 
-            <div class="po-offset-xl-12 po-lg-12 po-mb-2 po-mt-1 po-text-right">
-                <po-tag p-value="Versão 1.9"></po-tag>
+            <div class="po-xl-12 po-lg-12 po-mb-2 po-mt-1 po-text-right">
+                <po-tag p-value="Versão 2.1"></po-tag>
             </div>
             
         <!-- Bloco sempre visível: Campo de Chave e Checkbox de Busca Avançada -->
         <div class="po-row po-mt-3 po-align-items-center po-justify-content-between">
             <!-- Campo de Código Chave Acesso NF -->
-            <div class="po-md-6 po-sm-12 po-offset-xl-3">
+            <div class="po-xl-4 po-md-5 po-sm-12 po-offset-xl-3">
                 <po-input
                     p-label="Código Chave Acesso NF"
                     formControlName="cod-chave-acesso-nf">
@@ -44,133 +44,147 @@ p-text="Buscando Dados da API">
         <!-- Checkbox "Somente exportar para Excel" abaixo da linha de Chave/Busca Avançada -->
         <!-- Bloco de campos extras: exibido somente se busca avançada for ativada -->
         <div *ngIf="showExtraFields">
-            <!-- Linha: Estabelecimentos e Datas -->
-            <div class="po-row">
-                <!-- Código Estabelecimento Início -->
-                <div class="po-md-4 po-sm-12">
-                    <po-combo
-                        p-label="Estab. Início"
-                        name="filial"
-                        [p-options]="filialOptions"
-                        formControlName="cod-estabel-ini"
-                        required>
-                    </po-combo>
+            <!-- Linha única: todos os filtros da busca avançada, agrupados por quadro -->
+            <div class="po-row po-mt-2">
+                <!-- Grupo: Estabelecimento -->
+                <div class="po-xl-2 po-lg-4 po-md-6 po-sm-12">
+                    <div class="grupo-filtro">
+                        <div class="grupo-titulo">Estabelecimento</div>
+                        <div class="po-row">
+                            <div class="po-md-6 po-sm-6">
+                                <po-combo
+                                    p-label="Início"
+                                    name="filial"
+                                    [p-options]="filialOptions"
+                                    formControlName="cod-estabel-ini">
+                                </po-combo>
+                            </div>
+                            <div class="po-md-6 po-sm-6">
+                                <po-combo
+                                    p-label="Fim"
+                                    name="filial"
+                                    [p-options]="filialOptions"
+                                    formControlName="cod-estabel-fim">
+                                </po-combo>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <!-- Código Estabelecimento Fim -->
-                <div class="po-md-4 po-sm-12">
-                    <po-combo
-                        p-label="Estab. Fim"
-                        name="filial"
-                        [p-options]="filialOptions"
-                        formControlName="cod-estabel-fim"
-                        required>
-                    </po-combo>
+                <!-- Grupo: Data de Emissão -->
+                <div class="po-xl-2 po-lg-4 po-md-6 po-sm-12">
+                    <div class="grupo-filtro">
+                        <div class="grupo-titulo">Data de Emissão</div>
+                        <div class="po-row">
+                            <div class="po-md-6 po-sm-6">
+                                <po-datepicker
+                                    p-label="Início"
+                                    formControlName="data-ini"
+                                    p-required="true"
+                                    p-format="dd/mm/yyyy">
+                                </po-datepicker>
+                            </div>
+                            <div class="po-md-6 po-sm-6">
+                                <po-datepicker
+                                    p-label="Fim"
+                                    formControlName="data-fim"
+                                    p-required="true"
+                                    p-format="dd/mm/yyyy">
+                                </po-datepicker>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <!-- Data Início -->
-                <div class="po-md-2 po-sm-12">
-                    <po-datepicker
-                        p-label="Data Início"
-                        formControlName="data-ini"
-                        p-required="true"
-                        p-format="dd/mm/yyyy">
-                    </po-datepicker>
+                <!-- Grupo: Número da NF -->
+                <div class="po-xl-2 po-lg-4 po-md-6 po-sm-12">
+                    <div class="grupo-filtro">
+                        <div class="grupo-titulo">Nota Fiscal</div>
+                        <div class="po-row">
+                            <div class="po-md-6 po-sm-6">
+                                <po-input
+                                    p-label="Início"
+                                    formControlName="nro-nota-ini">
+                                </po-input>
+                            </div>
+                            <div class="po-md-6 po-sm-6">
+                                <po-input
+                                    p-label="Fim"
+                                    formControlName="nro-nota-fim"
+                                    p-mask="ZZZZZZZZZZZZZ">
+                                </po-input>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <!-- Data Fim -->
-                <div class="po-md-2 po-sm-12">
-                    <po-datepicker
-                        p-label="Data Fim"
-                        formControlName="data-fim"
-                        p-required="true"
-                        p-format="dd/mm/yyyy">
-                    </po-datepicker>
+                <!-- Grupo: Série -->
+                <div class="po-xl-2 po-lg-4 po-md-6 po-sm-12">
+                    <div class="grupo-filtro">
+                        <div class="grupo-titulo">Série</div>
+                        <div class="po-row">
+                            <div class="po-md-6 po-sm-6">
+                                <po-input
+                                    p-label="Início"
+                                    formControlName="serie-ini">
+                                </po-input>
+                            </div>
+                            <div class="po-md-6 po-sm-6">
+                                <po-input
+                                    p-label="Fim"
+                                    formControlName="serie-fim"
+                                    p-mask="ZZZ">
+                                </po-input>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <!-- Linha: NF, Séries, Emitentes e Natureza -->
-            <div class="po-row po-mt-1">
-                <!-- Número Nota Início -->
-                <div class="po-md-3 po-sm-12">
-                    <po-input
-                        p-label="NF Início"
-                        formControlName="nro-nota-ini">
-                    </po-input>
+                <!-- Grupo: Emitente -->
+                <div class="po-xl-2 po-lg-4 po-md-6 po-sm-12">
+                    <div class="grupo-filtro">
+                        <div class="grupo-titulo">Emitente</div>
+                        <div class="po-row">
+                            <div class="po-md-6 po-sm-6">
+                                <po-number
+                                    p-label="Início"
+                                    formControlName="cod-emitente-ini">
+                                </po-number>
+                            </div>
+                            <div class="po-md-6 po-sm-6">
+                                <po-number
+                                    p-label="Fim"
+                                    formControlName="cod-emitente-fim"
+                                    p-min-value="0"
+                                    p-max-value="99999">
+                                </po-number>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <!-- Número Nota Fim -->
-                <div class="po-md-3 po-sm-12">
-                    <po-input
-                        p-label="NF Fim"
-                        formControlName="nro-nota-fim"
-                        p-mask="ZZZZZZZZZZZZZ">
-                    </po-input>
-                </div>
-                <!-- Série Início -->
-                <div class="po-md-3 po-sm-12">
-                    <po-input
-                        p-label="Série Início"
-                        formControlName="serie-ini">
-                    </po-input>
-                </div>
-                <!-- Série Fim -->
-                <div class="po-md-3 po-sm-12">
-                    <po-input
-                        p-label="Série Fim"
-                        formControlName="serie-fim"
-                        p-mask="ZZZ">
-                    </po-input>
-                </div>
-            </div>
-            <div class="po-row po-mt-1">
-                <!-- Código Emitente Início -->
-                <div class="po-md-3 po-sm-12">
-                    <po-number
-                        p-label="Emit. Início"
-                        formControlName="cod-emitente-ini">
-                    </po-number>
-                </div>
-                <!-- Código Emitente Fim -->
-                <div class="po-md-3 po-sm-12">
-                    <po-number
-                        p-label="Emit. Fim"
-                        formControlName="cod-emitente-fim"
-                        p-min-value="0"
-                        p-max-value="99999">
-                    </po-number>
-                </div>
-                <!-- Natureza Operação Início -->
-                <div class="po-md-3 po-sm-12">
-                    <po-input
-                        p-label="Nat. Início"
-                        formControlName="nat-operacao-ini">
-                    </po-input>
-                </div>
-                <!-- Natureza Operação Fim -->
-                <div class="po-md-3 po-sm-12">
-                    <po-input
-                        p-label="Nat. Fim"
-                        formControlName="nat-operacao-fim"
-                        p-mask="ZZZZZZZZ">
-                    </po-input>
+                <!-- Grupo: Natureza de Operação -->
+                <div class="po-xl-2 po-lg-4 po-md-6 po-sm-12">
+                    <div class="grupo-filtro">
+                        <div class="grupo-titulo">Natureza</div>
+                        <div class="po-row">
+                            <div class="po-md-6 po-sm-6">
+                                <po-input
+                                    p-label="Início"
+                                    formControlName="nat-operacao-ini">
+                                </po-input>
+                            </div>
+                            <div class="po-md-6 po-sm-6">
+                                <po-input
+                                    p-label="Fim"
+                                    formControlName="nat-operacao-fim"
+                                    p-mask="ZZZZZZZZ">
+                                </po-input>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-        <!-- Coluna: Checkbox (à esquerda) -->
-        <div class="po-row po-offset-xl-5 po-mt-3">
-            <div class="po-col po-md-3 po-sm-12">
-              <po-checkbox
-                class="estilo-checkbox po-checkbox-label"
-                p-label="Baixar apenas relatório em Excel"
-                formControlName="l-export-excel">
-              </po-checkbox>
-            </div>
-          </div>
-          
-
-        
-        <!-- Linha de ações do formulário: Botões centralizados -->
-        <!-- Botão de Buscar -->
-        <!-- Linha com os dois botões centralizados -->
-
-        <div class="po-row po-offset-xl-4 po-md-9 po-mt-2 po-justify-content-start">
-            <div class="po-col po-md-3 po-sm-12 po-mr-2">
+        <!-- Linha de ações: Buscar, Exportar e checkbox centralizados; Importar XML à direita -->
+        <div class="po-row po-mt-3 acoes-filtro">
+            <div class="acoes-spacer"></div>
+            <div class="acoes-centro">
               <po-button
                 class="botao-padrao botao-buscar"
                 p-label="Buscar"
@@ -179,9 +193,6 @@ p-text="Buscando Dados da API">
                 [p-disabled]="!form.valid"
                 p-icon="po-icon-search">
               </po-button>
-            </div>
-          
-            <div class="po-col po-md-3 po-sm-12">
               <po-button
                 class="botao-padrao botao-exportar"
                 p-label="Exportar para Excel"
@@ -190,21 +201,21 @@ p-text="Buscando Dados da API">
                 (p-click)="exportToExcel()"
                 [p-disabled]="!form.get('l-export-excel')?.value">
               </po-button>
+              <po-checkbox
+                class="estilo-checkbox po-checkbox-label"
+                p-label="Baixar apenas relatório em Excel"
+                formControlName="l-export-excel">
+              </po-checkbox>
             </div>
-          </div>
-          
-          <div class="po-row po-offset-xl-5 po-md-4 po-mt-3 po-justify-content-start">
-            <div class="po-col ">
+            <div class="acoes-spacer acoes-direita">
               <a href="https://combioenergia.fluig.cloudtotvs.com.br/portal/p/1/importador_xml_datasul"
                  target="_blank"
-                 class="link-importar-xml">
+                 class="link-importar-xml botao-importar-xml">
                 <po-icon name="po-icon-export" class="po-mr-1"></po-icon>
-                
                 Importar XML para o Datasul / Geniality
               </a>
             </div>
-            <br><br><br>
-          </div>
+        </div>
 
         </form>
 
@@ -222,84 +233,189 @@ p-text="Buscando Dados da API">
 
     <!-- Tag com o Total de NF -->
     <div class="po-row" *ngIf="showTotalNf">
-        <div class="po-offset-xl-12 po-lg-12 po-mt-3 po-mb-2 po-text-right">            <po-tag [p-type]="type" [p-value]="cTotalTag"></po-tag>
+        <div class="po-xl-12 po-lg-12 po-mt-3 po-mb-2 po-text-right">            <po-tag [p-type]="type" [p-value]="cTotalTag"></po-tag>
         </div>
     </div>
 
-    <!-- Tabela com os Resultados -->
-    <po-table [p-columns]="columns" [p-items]="items" p-hide-columns-manager="true">
-    <!-- Template para os detalhes -->
-
-
-
-    <ng-template p-table-column-template [p-property]="targetProperty" let-value>
-        <div>
-
-    <ng-container *ngIf="value !== 0; else noPedido">
-        <div class="po-row">
-            <div class="po-xl-12 po-lg-12 po-md-12 po-sm-12">
-            <po-button
-                p-icon="po-icon-eye"
-                p-type="default"
-                p-size="small"
-                class="botao-olho-icon"
-                aria-label="Visualizar detalhes"
-                (p-click)="openPedidoModal(value.erp_cod_estabel, value.erp_cod_emitente)">
-            </po-button>
-            </div>
+    <!-- Cards de quantidade por Situação ERP (clique filtra a tabela) -->
+    <div class="cards-situacao" *ngIf="situacaoCards.length > 0 && items.length > 0">
+        <div class="card-situacao"
+             *ngFor="let card of situacaoCards"
+             [ngClass]="'card-' + corSituacao(card.situacao)"
+             [class.card-ativo]="filtroSituacao === card.situacao"
+             (click)="filtrarPorSituacao(card.situacao)"
+             role="button"
+             tabindex="0"
+             (keydown.enter)="filtrarPorSituacao(card.situacao)">
+            <span class="card-contagem">{{ card.count }}</span>
+            <span class="card-titulo">{{ card.situacao }}</span>
         </div>
-        </ng-container>
-        
-            <ng-template #noPedido>
-                <span>Sem Pedido</span>
-            </ng-template>
+        <!-- Filtro por Status ERP (traduzido do erp_status; aplicado só no front) -->
+        <div class="filtro-status" *ngIf="statusErpOptions.length > 1">
+            <po-select
+                p-label="Status ERP"
+                [p-options]="statusErpOptions"
+                [ngModel]="filtroStatusErp"
+                (ngModelChange)="filtroStatusErp = $event; aoMudarFiltroStatus()">
+            </po-select>
         </div>
-    </ng-template>
+    </div>
 
-
-
-
-    <ng-template p-table-column-template p-property="reprocessa" let-value>
-        <div class="po-row">
-          <po-button
-            p-label="Iniciar"
-            p-type="default"
-            p-size="small"
-            class="botao-rosa-texto"
-            aria-label="Iniciar reprocessamento"
-            (p-click)="confirmarReprocessamento(value.id)">
-          </po-button>
+    <!-- Tabela customizada com os Resultados -->
+    <div class="tabela-container" *ngIf="items.length > 0">
+        <table class="tabela-nf">
+            <thead>
+                <tr>
+                    <th class="col-expandir"></th>
+                    <th>Estab.</th>
+                    <th>Cod.Forn.</th>
+                    <th>Nome</th>
+                    <th>Tipo</th>
+                    <th>Num. NF</th>
+                    <th class="col-num">Valor NF</th>
+                    <th>Biomassa</th>
+                    <th>Chave de Acesso</th>
+                    <th>Data Emissão</th>
+                    <th>Status</th>
+                    <th>Situação ERP</th>
+                    <th>Pedido Fornecedor</th>
+                    <th>Reprocessar</th>
+                    <th>Fluig</th>
+                </tr>
+            </thead>
+            <tbody>
+                <ng-container *ngFor="let item of itemsPagina">
+                    <tr class="linha-nf" [class.linha-aberta]="expandedRows.has(item.id)">
+                        <td class="col-expandir">
+                            <button type="button"
+                                    class="botao-expandir"
+                                    [class.aberto]="expandedRows.has(item.id)"
+                                    (click)="toggleDetalhe(item.id)"
+                                    aria-label="Ver detalhes da nota">›</button>
+                        </td>
+                        <td>{{ item.erp_cod_estabel }}</td>
+                        <td>{{ item.erp_cod_emitente }}</td>
+                        <td class="col-nome">{{ item.desc_fornecedor }}</td>
+                        <td>{{ item.erp_tp_dfe }}</td>
+                        <td>{{ item.ide_nNF }}</td>
+                        <td class="col-num">{{ item.total_vNF }}</td>
+                        <td class="col-acao">
+                            <po-button *ngIf="item.biomassa; else semBiomassa"
+                                [p-label]="item.biomassa"
+                                p-size="small"
+                                p-type="default"
+                                class="botao-biomassa"
+                                aria-label="Ver recebimento de biomassa"
+                                (p-click)="abrirModalBiomassa(item)">
+                            </po-button>
+                            <ng-template #semBiomassa>
+                                <span>-</span>
+                            </ng-template>
+                        </td>
+                        <td class="col-chave">{{ item.id }}</td>
+                        <td class="col-data">{{ item.ide_dEmi }}</td>
+                        <td>
+                            <span class="badge-situacao" [ngClass]="'badge-' + corStatusErp(item.erp_status)">
+                                {{ traduzirStatusErp(item.erp_status) }}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge-situacao" [ngClass]="'badge-' + corSituacao(item.cSitErp)">
+                                {{ item.cSitErp }}
+                            </span>
+                        </td>
+                        <td class="col-acao">
+                            <ng-container *ngIf="item.pedido !== 0; else semPedido">
+                                <po-button
+                                    p-icon="po-icon-eye"
+                                    p-type="default"
+                                    p-size="small"
+                                    class="botao-olho-icon"
+                                    aria-label="Visualizar detalhes"
+                                    (p-click)="openPedidoModal(item.pedido.erp_cod_estabel, item.pedido.erp_cod_emitente)">
+                                </po-button>
+                            </ng-container>
+                            <ng-template #semPedido>
+                                <span>Sem Pedido</span>
+                            </ng-template>
+                        </td>
+                        <td class="col-acao">
+                            <po-button
+                                p-label="Iniciar"
+                                p-type="default"
+                                p-size="small"
+                                class="botao-rosa-texto"
+                                aria-label="Iniciar reprocessamento"
+                                (p-click)="confirmarReprocessamento(item.reprocessa.id)">
+                            </po-button>
+                        </td>
+                        <td class="col-acao">
+                            <po-button *ngIf="item.processoFluig; else semProcesso"
+                                [p-label]="item.processoFluig"
+                                p-size="small"
+                                p-type="default"
+                                class="botao-processo-verde"
+                                aria-label="Abrir processo Fluig"
+                                (p-click)="abrirModalProcesso(item.processoFluig, item.processoFluigOrigem)">
+                            </po-button>
+                            <ng-template #semProcesso>
+                                <span>-</span>
+                            </ng-template>
+                        </td>
+                    </tr>
+                    <tr *ngIf="expandedRows.has(item.id)" class="linha-detalhe">
+                        <td colspan="15">
+                            <table class="tabela-logs" *ngIf="item.details?.length > 0; else semLogs">
+                                <thead>
+                                    <tr>
+                                        <th>Data</th>
+                                        <th>Hora</th>
+                                        <th>Usuário</th>
+                                        <th>Cód.</th>
+                                        <th>Mensagem</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let log of item.details">
+                                        <td>{{ log.dt_log }}</td>
+                                        <td>{{ log.hr_log }}</td>
+                                        <td>{{ log.usuario }}</td>
+                                        <td>{{ log.cod_msg }}</td>
+                                        <td class="col-msg">{{ log.des_msg }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <ng-template #semLogs>
+                                <span class="sem-logs">Nenhum log para esta nota.</span>
+                            </ng-template>
+                        </td>
+                    </tr>
+                </ng-container>
+            </tbody>
+        </table>
+        <div class="sem-dados" *ngIf="itemsFiltrados.length === 0">
+            Nenhuma NF na situação selecionada.
         </div>
-      </ng-template>
-      
+        <!-- Paginação (somente no front, 50 por página) -->
+        <div class="paginacao" *ngIf="itemsFiltrados.length > TAMANHO_PAGINA">
+            <button type="button"
+                    class="botao-paginacao"
+                    [disabled]="paginaAtual === 1"
+                    (click)="paginaAnterior()">‹ Anterior</button>
+            <span class="paginacao-info">
+                {{ paginaInicio }}–{{ paginaFim }} de {{ itemsFiltrados.length }}
+                (página {{ paginaAtual }} de {{ totalPaginas }})
+            </span>
+            <button type="button"
+                    class="botao-paginacao"
+                    [disabled]="paginaAtual === totalPaginas"
+                    (click)="proximaPagina()">Próxima ›</button>
+        </div>
+    </div>
 
-
-
-
-      
-
-      <ng-template p-table-column-template p-property="processoFluig" let-value let-row="row">
-        <ng-container *ngIf="value; else noProcesso">
-          <po-button 
-            [p-label]="value"
-            p-size="small"
-            p-type="default"
-            class="botao-processo-verde"
-            aria-label="Abrir processo Fluig"
-            (p-click)="abrirModalProcesso(value)">
-          </po-button>
-        </ng-container>
-        <ng-template #noProcesso>
-          <span>-</span>
-        </ng-template>
-      </ng-template>
-      
-
-    
-
-
-
-    </po-table>
+    <div class="sem-dados" *ngIf="items.length === 0">
+        Nenhum dado encontrado
+    </div>
 
     <!-- Modal de Detalhes do Pedido -->
     <po-modal #modal p-title="Detalhes do Pedido">
@@ -383,6 +499,88 @@ p-text="Buscando Dados da API">
     <ng-template #noData>
         <p>Nenhum retorno disponível.</p>
     </ng-template>
+    </po-modal>
+
+    <!-- Modal de Recebimento de Biomassa (vínculo pela chave de acesso) -->
+    <po-modal #modalBiomassa p-size="xl" p-title="Recebimento de Biomassa">
+        <div *ngIf="loadingBiomassa">
+            <po-loading p-label="Buscando recebimento de biomassa..."></po-loading>
+        </div>
+        <div *ngIf="!loadingBiomassa">
+            <div *ngIf="modalDataBiomassa.length > 0; else semRecebimento">
+                <div *ngFor="let rec of modalDataBiomassa" class="biomassa-card">
+                    <div class="biomassa-header">
+                        NF {{ rec.NUM_NF }} — {{ rec.FORNECEDOR }}
+                        <span class="biomassa-entrada">Entrada: {{ rec.ENTRADA }}</span>
+                    </div>
+
+                    <div class="biomassa-secao">Recebimento</div>
+                    <div class="biomassa-grid">
+                        <p><strong>Solicitação:</strong> {{ rec.SOLICITACAO }}</p>
+                        <p><strong>Localização:</strong> {{ rec.LOCALIZACAO }}</p>
+                        <p><strong>Unidade:</strong> {{ rec.COD_UNIDADE }} - {{ rec.UNIDADE }}</p>
+                        <p><strong>Natureza:</strong> {{ rec.NATUREZA }}</p>
+                        <p><strong>Emissão:</strong> {{ rec.EMISSAO }}</p>
+                        <p><strong>Solicitante:</strong> {{ rec.EMAIL }}</p>
+                    </div>
+
+                    <div class="biomassa-secao">Item</div>
+                    <div class="biomassa-grid">
+                        <p><strong>Item:</strong> {{ rec.COD_ITEM }} - {{ rec.DESC_ITEM }}</p>
+                        <p><strong>Tipo Biomassa:</strong> {{ rec.TIPO_BIOMASSA }}</p>
+                        <p><strong>Un. Medida:</strong> {{ rec.UNIDADE_MEDIDA }}</p>
+                        <p><strong>Quantidade:</strong> {{ rec.QTD_ITEM }}</p>
+                        <p><strong>Valor Unit.:</strong> {{ rec.VALOR_UNIT | currency:'BRL' }}</p>
+                        <p><strong>Valor Total:</strong> {{ rec.VALOR_TOTAL | currency:'BRL' }}</p>
+                        <p><strong>Frete:</strong> {{ rec.FRETE }}</p>
+                        <p><strong>Valor Frete:</strong> {{ rec.VALOR_FRETE | currency:'BRL' }}</p>
+                    </div>
+
+                    <div class="biomassa-secao">Transporte</div>
+                    <div class="biomassa-grid">
+                        <p><strong>Transportadora:</strong> {{ rec.TRANSPORTADORA }}</p>
+                        <p><strong>Placa:</strong> {{ rec.PLACA }}</p>
+                        <p><strong>Motorista:</strong> {{ rec.MOTORISTA }}</p>
+                        <p><strong>Transp. Real:</strong> {{ rec.TRANSP_REAL }}</p>
+                        <p><strong>Transp. Real Nova:</strong> {{ rec.TRANSP_REAL_NOVA }}</p>
+                        <p><strong>Placa Nova:</strong> {{ rec.PLACA_NOVA }}</p>
+                        <p><strong>Motorista Novo:</strong> {{ rec.MOTORISTA_NOVO }}</p>
+                        <p><strong>Metragem:</strong> {{ rec.METRAGEM }}</p>
+                    </div>
+
+                    <div class="biomassa-secao">Pesagem</div>
+                    <div class="biomassa-grid">
+                        <p><strong>Peso Bruto:</strong> {{ rec.PESO_BRUTO }}</p>
+                        <p><strong>Tara:</strong> {{ rec.TARA }}</p>
+                        <p><strong>Peso Líquido:</strong> {{ rec.PESO_LIQUIDO }}</p>
+                        <p><strong>Excedente:</strong> {{ rec.PESO_EXCEDENTE || '-' }}</p>
+                        <p><strong>Hr. Entrada:</strong> {{ rec.HR_ENTRADA }}</p>
+                        <p><strong>Hr. Saída:</strong> {{ rec.HR_SAIDA }}</p>
+                        <p><strong>Tempo Descarreg.:</strong> {{ rec.TEMPO_DESCARREGAMENTO }}</p>
+                        <p><strong>Local Descarreg.:</strong> {{ rec.LOCAL_DESCARREGAMENTO }}</p>
+                    </div>
+
+                    <div class="biomassa-secao">Umidade</div>
+                    <div class="biomassa-grid">
+                        <p><strong>Resultado 1:</strong> {{ rec.RESULT_UMIDADE_1 || '-' }}</p>
+                        <p><strong>Resultado 2:</strong> {{ rec.RESULT_UMIDADE_2 || '-' }}</p>
+                        <p><strong>Resultado 3:</strong> {{ rec.RESULT_UMIDADE_3 || '-' }}</p>
+                        <p><strong>Umidade Inicial:</strong> {{ rec.UMIDADE_INICIAL }}</p>
+                        <p><strong>Umidade Total:</strong> {{ rec.UMIDADE }}</p>
+                        <p><strong>Utilizou Balde:</strong> {{ rec.UTILIZA_BALDE || 'Não' }}</p>
+                        <p><strong>Peso Amostra 1:</strong> {{ rec.PESO_AMOSTRA_1 || '-' }}</p>
+                        <p><strong>Peso Amostra 2:</strong> {{ rec.PESO_AMOSTRA_2 || '-' }}</p>
+                    </div>
+
+                    <div class="biomassa-secao" *ngIf="rec.OBSERVACOES">Observações</div>
+                    <p class="biomassa-obs" *ngIf="rec.OBSERVACOES">{{ rec.OBSERVACOES }}</p>
+                </div>
+            </div>
+            <ng-template #semRecebimento>
+                <p>Nenhum recebimento de biomassa encontrado para a chave de acesso desta NF.</p>
+                <p class="biomassa-dica">Registros antigos podem não ter a chave preenchida no formulário de recebimento.</p>
+            </ng-template>
+        </div>
     </po-modal>
 
     <!-- Modal de Detalhes do Processo Fluig -->

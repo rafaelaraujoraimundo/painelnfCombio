@@ -4,7 +4,7 @@ import { AppComponent } from './app.component';
 import { PoModule, PoTableModule } from '@po-ui/ng-components';
 import { HttpClientModule } from '@angular/common/http';
 import { FluigService } from './services/fluig.service';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 
 
@@ -17,6 +17,7 @@ import { ReactiveFormsModule } from '@angular/forms';
     PoModule,
     HttpClientModule,
     PoTableModule,
+    FormsModule,
     ReactiveFormsModule
   ],
   providers: [FluigService],

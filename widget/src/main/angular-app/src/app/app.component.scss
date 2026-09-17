@@ -183,6 +183,457 @@
   }
   
   /* ===================================================================
+     BARRA DE AÇÕES — botões/checkbox à esquerda, importar XML à direita
+     =================================================================== */
+  .acoes-filtro {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    row-gap: 8px;
+    padding: 0 4px;
+    margin-bottom: 24px;
+  }
+
+  /* Espaçadores iguais dos dois lados mantêm o grupo central de fato centralizado */
+  .acoes-spacer {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+
+  .acoes-direita {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .acoes-centro {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+  }
+
+  /* Link "Importar XML" com aparência de botão */
+  .botao-importar-xml {
+    border: 1px solid #116533;
+    border-radius: 4px;
+    padding: 8px 16px;
+    background-color: #ffffff;
+  }
+
+  .botao-importar-xml:hover {
+    background-color: #eaf4ee;
+    text-decoration: none;
+  }
+
+  /* ===================================================================
+     QUADRO DOS GRUPOS DE FILTROS (par início/fim)
+     =================================================================== */
+  .grupo-filtro {
+    border: 1px solid #d4d2d2;
+    border-radius: 4px;
+    padding: 6px 2px 4px;
+    height: 100%;
+  }
+
+  /* Título do grupo (linha de cima); os campos internos ficam só Início/Fim */
+  .grupo-titulo {
+    font-size: 12px;
+    font-weight: 600;
+    color: #116533;
+    padding: 0 6px 2px;
+    border-bottom: 1px solid #e3f2e7;
+    margin-bottom: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: center;
+  }
+
+  /* ===================================================================
+     FILTROS COMPACTOS — SETA DO COMBO E BOTÃO DO CALENDÁRIO MENORES
+     =================================================================== */
+
+  /* Seta (botão) do combo de estabelecimento */
+  ::ng-deep po-combo .po-field-icon-container-right,
+  ::ng-deep po-combo .po-combo-arrow,
+  ::ng-deep po-combo .po-combo-arrow .po-icon {
+    width: 26px !important;
+    height: 33px !important;
+  }
+
+  /* Alinha a área da seta com o input: o tema usa top:50% + translateY(-50%),
+     que desalinha com o input de 33px — fixamos no padding de 8px do container */
+  ::ng-deep po-combo .po-field-icon-container-right {
+    top: 8px !important;
+    bottom: auto !important;
+    margin: 0 !important;
+    transform: none !important;
+  }
+
+  ::ng-deep po-combo .po-combo-arrow .po-icon {
+    font-size: 16px !important;
+  }
+
+  /* Sem min-width do tema: o combo encolhe junto com a coluna do grid */
+  ::ng-deep po-combo .po-combo-input {
+    padding-right: 28px !important;
+    min-width: 0 !important;
+    width: 100% !important;
+  }
+
+  /* Painel de opções do combo: mais largo que o campo e com fonte menor,
+     para a descrição da filial (código - nome - CNPJ) caber sem scroll */
+  ::ng-deep po-combo .po-combo-container {
+    min-width: 320px !important;
+    width: max-content !important;
+    max-width: 460px !important;
+    left: 0 !important;
+    right: auto !important;
+    z-index: 20;
+  }
+
+  ::ng-deep po-combo .po-combo-container .po-listbox,
+  ::ng-deep po-combo .po-combo-container .po-listbox li,
+  ::ng-deep po-combo .po-combo-container .po-listbox span {
+    font-size: 12px !important;
+    white-space: nowrap;
+  }
+
+  /* Botão do calendário do datepicker */
+  ::ng-deep .po-datepicker-button .po-button {
+    min-width: 26px !important;
+    width: 26px !important;
+    height: 33px !important;
+    min-height: 0 !important;
+    max-height: 33px !important;
+    padding: 0 4px !important;
+  }
+
+  ::ng-deep .po-datepicker-button .po-icon-calendar {
+    font-size: 16px !important;
+  }
+
+  /* ===================================================================
+     CARDS DE SITUAÇÃO ERP — contagem por situação, clique filtra
+     =================================================================== */
+  .cards-situacao {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin: 16px 0;
+  }
+
+  .card-situacao {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 150px;
+    padding: 10px 16px;
+    background-color: #ffffff;
+    border: 1px solid #d4d2d2;
+    border-left-width: 4px;
+    border-radius: 6px;
+    cursor: pointer;
+    user-select: none;
+    transition: box-shadow 0.15s ease, transform 0.15s ease, background-color 0.15s ease;
+  }
+
+  .card-situacao:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+    transform: translateY(-1px);
+  }
+
+  .card-contagem {
+    font-size: 22px;
+    font-weight: bold;
+    line-height: 1.1;
+    color: #116533;
+  }
+
+  .card-titulo {
+    font-size: 12px;
+    color: #4a5c60;
+    margin-top: 2px;
+  }
+
+  /* Select de Status ERP à direita dos cards */
+  .filtro-status {
+    margin-left: auto;
+    align-self: center;
+    min-width: 220px;
+  }
+
+  /* Cor do filete lateral por tipo de situação */
+  .card-ok      { border-left-color: #116533; }
+  .card-erro    { border-left-color: #c62828; }
+  .card-alerta  { border-left-color: #e6a817; }
+  .card-neutro  { border-left-color: #90a4ae; }
+
+  .card-erro   .card-contagem { color: #c62828; }
+  .card-alerta .card-contagem { color: #b26a00; }
+  .card-neutro .card-contagem { color: #455a64; }
+
+  /* Card selecionado (filtro ativo) */
+  .card-situacao.card-ativo {
+    background-color: #116533;
+    border-color: #116533;
+  }
+
+  .card-situacao.card-ativo .card-contagem,
+  .card-situacao.card-ativo .card-titulo {
+    color: #ffffff;
+  }
+
+  /* ===================================================================
+     TABELA CUSTOMIZADA DE NOTAS FISCAIS
+     =================================================================== */
+  .tabela-container {
+    border: 1px solid #d4d2d2;
+    border-radius: 6px;
+    overflow-x: auto;
+    margin-bottom: 24px;
+  }
+
+  .tabela-nf {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+
+  .tabela-nf thead th {
+    position: sticky;
+    top: 0;
+    background-color: #116533;
+    color: #ffffff;
+    font-weight: 600;
+    text-align: left;
+    padding: 10px 8px;
+    white-space: nowrap;
+    z-index: 1;
+  }
+
+  .tabela-nf tbody td {
+    padding: 6px 8px;
+    border-bottom: 1px solid #e8e8e8;
+    vertical-align: middle;
+  }
+
+  .tabela-nf tbody tr.linha-nf:nth-child(4n+3) {
+    background-color: #f7faf8; /* zebra: cada NF gera até 2 <tr>, por isso 4n */
+  }
+
+  .tabela-nf tbody tr.linha-nf:hover {
+    background-color: #eaf4ee;
+  }
+
+  .tabela-nf tbody tr.linha-aberta {
+    background-color: #eaf4ee !important;
+  }
+
+  .col-nome  { min-width: 180px; }
+  .col-chave { font-family: monospace; font-size: 11px; word-break: break-all; min-width: 200px; }
+  .col-data,
+  .col-num   { white-space: nowrap; }
+  .col-acao  { text-align: center; white-space: nowrap; }
+
+  /* Botão de expandir detalhes (logs) */
+  .col-expandir { width: 34px; text-align: center; }
+
+  .botao-expandir {
+    border: 1px solid #116533;
+    background: #ffffff;
+    color: #116533;
+    border-radius: 4px;
+    width: 22px;
+    height: 22px;
+    line-height: 1;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.15s ease, background-color 0.15s ease;
+  }
+
+  .botao-expandir:hover { background-color: #eaf4ee; }
+
+  .botao-expandir.aberto {
+    transform: rotate(90deg);
+    background-color: #116533;
+    color: #ffffff;
+  }
+
+  /* Badge da Situação ERP */
+  .badge-situacao {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .badge-ok     { background-color: #e3f2e7; color: #116533; }
+  .badge-erro   { background-color: #fdecea; color: #c62828; }
+  .badge-alerta { background-color: #fff8e1; color: #b26a00; }
+  .badge-neutro { background-color: #eceff1; color: #455a64; }
+
+  /* Linha de detalhe (logs da nota) */
+  .linha-detalhe > td {
+    background-color: #f4f8f5;
+    padding: 12px 16px 16px 42px;
+  }
+
+  .tabela-logs {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 11px;
+    background-color: #ffffff;
+    border: 1px solid #dfe7e1;
+    border-radius: 4px;
+  }
+
+  .tabela-logs thead th {
+    background-color: #e3f2e7;
+    color: #116533;
+    text-align: left;
+    padding: 6px 8px;
+    white-space: nowrap;
+  }
+
+  .tabela-logs tbody td {
+    padding: 5px 8px;
+    border-bottom: 1px solid #eef2ef;
+  }
+
+  .col-msg { word-break: break-word; }
+
+  .sem-logs {
+    font-size: 12px;
+    color: #4a5c60;
+    font-style: italic;
+  }
+
+  .sem-dados {
+    text-align: center;
+    color: #4a5c60;
+    font-size: 13px;
+    padding: 24px 0;
+  }
+
+  /* Paginação da tabela (front-only, 50 por página) */
+  .paginacao {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding: 10px 8px;
+    border-top: 1px solid #e8e8e8;
+    background-color: #f7faf8;
+  }
+
+  .botao-paginacao {
+    border: 1px solid #116533;
+    background-color: #ffffff;
+    color: #116533;
+    border-radius: 4px;
+    padding: 5px 14px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+  }
+
+  .botao-paginacao:hover:not(:disabled) {
+    background-color: #eaf4ee;
+  }
+
+  .botao-paginacao:disabled {
+    border-color: #c5cdd0;
+    color: #9aa7ab;
+    cursor: default;
+  }
+
+  .paginacao-info {
+    font-size: 12px;
+    color: #4a5c60;
+  }
+
+  /* ===================================================================
+     BIOMASSA — botão na tabela e modal de recebimento
+     =================================================================== */
+  ::ng-deep .botao-biomassa .po-button {
+    background-color: #e3f2e7 !important;
+    color: #116533 !important;
+    border: none;
+    transition: background-color 0.3s ease;
+  }
+
+  ::ng-deep .botao-biomassa .po-button:hover {
+    background-color: #c8e2cf !important;
+    cursor: pointer;
+  }
+
+  .biomassa-card {
+    border: 1px solid #d4d2d2;
+    border-radius: 6px;
+    padding: 12px 16px 16px;
+    margin-bottom: 16px;
+  }
+
+  .biomassa-header {
+    font-size: 14px;
+    font-weight: bold;
+    color: #116533;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #e3f2e7;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .biomassa-entrada {
+    font-weight: normal;
+    color: #4a5c60;
+  }
+
+  .biomassa-secao {
+    font-size: 12px;
+    font-weight: 600;
+    color: #ffffff;
+    background-color: #116533;
+    border-radius: 4px;
+    padding: 3px 10px;
+    margin: 12px 0 6px;
+    display: inline-block;
+  }
+
+  .biomassa-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px 24px;
+    font-size: 13px;
+
+    p { margin: 2px 0; }
+  }
+
+  @media (max-width: 768px) {
+    .biomassa-grid { grid-template-columns: 1fr; }
+  }
+
+  .biomassa-obs {
+    font-size: 13px;
+    margin: 2px 0;
+  }
+
+  .biomassa-dica {
+    font-size: 12px;
+    color: #4a5c60;
+    font-style: italic;
+  }
+
+  /* ===================================================================
      MODAL DE DETALHES DO FLUIG — ORGANIZAÇÃO INTERNA
      =================================================================== */
   .modal-content {

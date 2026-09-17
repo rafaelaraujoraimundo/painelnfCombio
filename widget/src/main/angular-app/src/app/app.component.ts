@@ -27,6 +27,7 @@ export class AppComponent implements OnInit {
   @ViewChild('modalPedidos') modalPedidos!: PoModalComponent;
   @ViewChild('modalReprocessa') modalReprocessa!: PoModalComponent;
   @ViewChild('modalProcessoFluig') modalProcessoFluig!: PoModalComponent;
+  @ViewChild('modalBiomassa') modalBiomassa!: PoModalComponent;
   processoFinalizado: { processInstanceId: number; processDescription: string; status: string } | null = null;
   chaveNF: string = '';
   form!: FormGroup;
@@ -58,13 +59,238 @@ export class AppComponent implements OnInit {
   modalProcessoFluigValue: string = '';
   processoFluigAtivo: any = null;
   loadingProcesso: boolean = false;
+  situacaoCards: Array<{ situacao: string; count: number }> = [];
+  filtroSituacao: string | null = null;
+  expandedRows = new Set<string>();
+  paginaAtual: number = 1;
+  readonly TAMANHO_PAGINA: number = 50;
 
-  abrirModalProcesso(processo: string): void {
+  // Tradução do erp_status (int) da esrf_inf — filtro aplicado só no front.
+  readonly STATUS_ERP: { [codigo: string]: string } = {
+    '1': 'Pendente',
+    '2': 'Traduzido',
+    '3': 'Implantado',
+    '4': 'Suspenso',
+    '5': 'Cancelado',
+    '6': 'Erro',
+    '7': 'Implantado Parcial',
+    '8': 'Sem XML',
+    '9': 'Implantado Manual',
+    '10': 'Arquivado',
+    '11': 'Digitalizado',
+    '12': 'Suspenso Manual'
+  };
+  filtroStatusErp: string = '';
+  statusErpOptions: Array<any> = [];
+
+  traduzirStatusErp(codigo: any): string {
+    const chave = '' + parseInt(codigo, 10);
+    return this.STATUS_ERP[chave] || (chave !== 'NaN' ? 'Código ' + codigo : '-');
+  }
+
+  corStatusErp(codigo: any): string {
+    const c = parseInt(codigo, 10);
+    if (c === 3 || c === 7 || c === 9) {
+      return 'ok';       // implantado (total/parcial/manual)
+    }
+    if (c === 5 || c === 6) {
+      return 'erro';     // cancelado / erro
+    }
+    if (c === 1 || c === 4 || c === 8 || c === 12) {
+      return 'alerta';   // pendente / suspenso / sem XML
+    }
+    return 'neutro';
+  }
+
+  // Monta as opções do select com os status presentes no resultado (com contagem).
+  montarFiltroStatusErp(): void {
+    const contagem = new Map<string, number>();
+    this.itemsResponse.forEach(item => {
+      const chave = '' + parseInt(item.erp_status, 10);
+      if (chave !== 'NaN') {
+        contagem.set(chave, (contagem.get(chave) || 0) + 1);
+      }
+    });
+    this.statusErpOptions = [{ label: 'Todos', value: '' }].concat(
+      Array.from(contagem.entries())
+        .sort((a, b) => Number(a[0]) - Number(b[0]))
+        .map(([codigo, qtd]) => ({ label: this.traduzirStatusErp(codigo) + ' (' + qtd + ')', value: codigo }))
+    );
+  }
+
+  aoMudarFiltroStatus(): void {
+    this.paginaAtual = 1;
+  }
+
+  // Paginação apenas no front: a API traz tudo e a tabela renderiza 50 por vez.
+  get totalPaginas(): number {
+    return Math.max(1, Math.ceil(this.itemsFiltrados.length / this.TAMANHO_PAGINA));
+  }
+
+  get itemsPagina(): any[] {
+    const inicio = (this.paginaAtual - 1) * this.TAMANHO_PAGINA;
+    return this.itemsFiltrados.slice(inicio, inicio + this.TAMANHO_PAGINA);
+  }
+
+  get paginaInicio(): number {
+    return this.itemsFiltrados.length === 0 ? 0 : (this.paginaAtual - 1) * this.TAMANHO_PAGINA + 1;
+  }
+
+  get paginaFim(): number {
+    return Math.min(this.paginaAtual * this.TAMANHO_PAGINA, this.itemsFiltrados.length);
+  }
+
+  proximaPagina(): void {
+    if (this.paginaAtual < this.totalPaginas) {
+      this.paginaAtual++;
+    }
+  }
+
+  paginaAnterior(): void {
+    if (this.paginaAtual > 1) {
+      this.paginaAtual--;
+    }
+  }
+  modalDataBiomassa: any[] = [];
+  loadingBiomassa: boolean = false;
+
+  abrirModalBiomassa(item: any): void {
+    this.loadingBiomassa = true;
+    this.modalDataBiomassa = [];
+    this.modalBiomassa.open();
+
+    this.fluigService.getBiomassaPorChave(item.id).subscribe({
+      next: (res: any) => {
+        const valores = res?.content?.values || [];
+        if (valores.length > 0 && valores[0].error) {
+          this.poNotification.error('Erro ao consultar biomassa: ' + valores[0].error);
+          this.modalDataBiomassa = [];
+        } else {
+          this.modalDataBiomassa = valores;
+        }
+        this.loadingBiomassa = false;
+      },
+      error: () => {
+        this.loadingBiomassa = false;
+        this.poNotification.error('Erro ao consultar o recebimento de biomassa.');
+      }
+    });
+  }
+
+  get itemsFiltrados(): any[] {
+    let lista = this.items;
+    if (this.filtroSituacao) {
+      lista = lista.filter(item => (item.cSitErp || 'Sem Situação') === this.filtroSituacao);
+    }
+    if (this.filtroStatusErp !== '') {
+      lista = lista.filter(item => ('' + parseInt(item.erp_status, 10)) === this.filtroStatusErp);
+    }
+    return lista;
+  }
+
+  montarCardsSituacao(): void {
+    const grupos = new Map<string, number>();
+    this.itemsResponse.forEach(item => {
+      const situacao = item.cSitErp || 'Sem Situação';
+      grupos.set(situacao, (grupos.get(situacao) || 0) + 1);
+    });
+    this.situacaoCards = Array.from(grupos.entries())
+      .map(([situacao, count]) => ({ situacao, count }))
+      .sort((a, b) => b.count - a.count);
+  }
+
+  filtrarPorSituacao(situacao: string): void {
+    this.filtroSituacao = this.filtroSituacao === situacao ? null : situacao;
+    this.paginaAtual = 1;
+  }
+
+  corSituacao(situacao: string): string {
+    const s = (situacao || '').toLowerCase();
+    if (s.includes('atualizad')) {
+      return 'ok';
+    }
+    if (s.includes('cancel') || s.includes('erro') || s.includes('rejeit')) {
+      return 'erro';
+    }
+    if (s.includes('pend') || s.includes('não') || s.includes('nao')) {
+      return 'alerta';
+    }
+    return 'neutro';
+  }
+
+  toggleDetalhe(id: string): void {
+    if (this.expandedRows.has(id)) {
+      this.expandedRows.delete(id);
+    } else {
+      this.expandedRows.add(id);
+    }
+  }
+
+  // Preenche a coluna Fluig das NFs de biomassa com o nº da solicitação
+  // (SOLICITACAO do wf_recebimento_biomassa), buscado pela chave de acesso.
+  // Roda em background após a carga da tabela, em lotes sequenciais: a coluna
+  // vai completando à medida que cada lote retorna, sem travar a tela.
+  preencherSolicitacaoBiomassa(): void {
+    const chaves = this.itemsResponse
+      .filter(item => item.biomassa && !item.processoFluig && ('' + item.id).length === 44)
+      .map(item => '' + item.id);
+
+    if (chaves.length === 0) {
+      return;
+    }
+
+    const TAMANHO_LOTE = 150;
+    const lotes: string[][] = [];
+    for (let i = 0; i < chaves.length; i += TAMANHO_LOTE) {
+      lotes.push(chaves.slice(i, i + TAMANHO_LOTE));
+    }
+
+    const aplicarRetorno = (res: any): void => {
+      const valores = res?.content?.values || [];
+      if (valores.length === 0 || valores[0].error) {
+        return;
+      }
+      const solicitacaoPorChave = new Map<string, string>();
+      valores.forEach((v: any) => {
+        if (v.CHAVE_ACESSO && v.SOLICITACAO && v.SOLICITACAO !== 'N/A' && !solicitacaoPorChave.has(v.CHAVE_ACESSO)) {
+          solicitacaoPorChave.set(v.CHAVE_ACESSO, v.SOLICITACAO);
+        }
+      });
+      this.itemsResponse.forEach(item => {
+        const solicitacao = solicitacaoPorChave.get('' + item.id);
+        if (solicitacao && !item.processoFluig) {
+          item.processoFluig = solicitacao;
+          item.processoFluigOrigem = 'biomassa';
+        }
+      });
+    };
+
+    const processarLote = (indice: number): void => {
+      if (indice >= lotes.length) {
+        return;
+      }
+      this.fluigService.getBiomassaSolicitacoes(lotes[indice]).subscribe({
+        next: (res: any) => {
+          aplicarRetorno(res);
+          processarLote(indice + 1);
+        },
+        error: () => {
+          // silencioso: segue para o próximo lote; NFs sem retorno ficam com '-'
+          processarLote(indice + 1);
+        }
+      });
+    };
+
+    processarLote(0);
+  }
+
+  abrirModalProcesso(processo: string, origem?: string): void {
+    const processName = origem === 'biomassa' ? 'wf_recebimento_biomassa' : 'recebimento_facil_wf';
     this.modalProcessoFluigValue = processo;
     this.loadingProcesso = true;
     this.processoFluigAtivo = null;
-  
-    this.fluigService.getProcessoAtivo(processo).subscribe({
+
+    this.fluigService.getProcessoAtivo(processo, processName).subscribe({
       next: (res: any) => {
         const tarefa = res.items.find((item: any) => item.status === 'NOT_COMPLETED');
         if (tarefa) {
@@ -79,7 +305,7 @@ export class AppComponent implements OnInit {
           };
         } else {
           // não havia tarefa ativa → buscar histórico finalizado
-          this.fluigService.getProcessoFinalizado(processo).subscribe({
+          this.fluigService.getProcessoFinalizado(processo, processName).subscribe({
             next: fin => {
               const proc = fin.items[0];
               if (proc) {
@@ -192,8 +418,8 @@ export class AppComponent implements OnInit {
 
 
     this.form = this.formBuilder.group({
-      'cod-estabel-ini': ['101'],
-      'cod-estabel-fim': ['101'],
+      'cod-estabel-ini': [''],
+      'cod-estabel-fim': [''],
       'data-ini': [formatDate(firstDayOfMonth)],
       'data-fim': [formatDate(lastDayOfMonth)],
       'nro-nota-ini': [''],
@@ -248,6 +474,12 @@ export class AppComponent implements OnInit {
       this.showProgressBar = true;
       this.bLoading = false;
       this.showTotalNf = false;
+      this.situacaoCards = [];
+      this.filtroSituacao = null;
+      this.filtroStatusErp = '';
+      this.statusErpOptions = [];
+      this.expandedRows.clear();
+      this.paginaAtual = 1;
       const formData = this.form.value;
       formData['cod-chave-acesso-nf'] = formData['cod-chave-acesso-nf'].replace(/\s+/g, '');
       this.nProgressPercent = 0;
@@ -354,6 +586,7 @@ export class AppComponent implements OnInit {
                 biomassa: item.biomassa,
                 numPedidoN: item.numPedido,
                 cSitErp: item.cSitErp,
+                erp_status: item.erp_status,
                 id: item.id,
                 pedido:  item,
                 details: responseLogs.filter((r:any) => r.id == item.id),
@@ -380,6 +613,9 @@ export class AppComponent implements OnInit {
                   // Se não estiver marcado, exibe os dados na tela
                   this.items = this.itemsResponse;
                   this.bExportExcel = true;
+                  this.montarCardsSituacao();
+                  this.montarFiltroStatusErp();
+                  this.preencherSolicitacaoBiomassa();
                 }
               }
 
