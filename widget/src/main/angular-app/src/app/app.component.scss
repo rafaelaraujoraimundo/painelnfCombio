@@ -358,11 +358,12 @@
     margin-top: 2px;
   }
 
-  /* Select de Status ERP à direita dos cards */
+  /* Multiselect de Status ERP à direita dos cards */
   .filtro-status {
     margin-left: auto;
     align-self: center;
-    min-width: 220px;
+    min-width: 280px;
+    max-width: 420px;
   }
 
   /* Cor do filete lateral por tipo de situação */

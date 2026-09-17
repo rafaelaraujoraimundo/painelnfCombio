@@ -250,14 +250,15 @@ p-text="Buscando Dados da API">
             <span class="card-contagem">{{ card.count }}</span>
             <span class="card-titulo">{{ card.situacao }}</span>
         </div>
-        <!-- Filtro por Status ERP (traduzido do erp_status; aplicado só no front) -->
-        <div class="filtro-status" *ngIf="statusErpOptions.length > 1">
-            <po-select
+        <!-- Filtro por Status ERP (multiselect traduzido do erp_status; todos
+             marcados por padrão; aplicado só no front) -->
+        <div class="filtro-status" *ngIf="statusErpOptions.length > 0">
+            <po-multiselect
                 p-label="Status ERP"
                 [p-options]="statusErpOptions"
                 [ngModel]="filtroStatusErp"
                 (ngModelChange)="filtroStatusErp = $event; aoMudarFiltroStatus()">
-            </po-select>
+            </po-multiselect>
         </div>
     </div>
 

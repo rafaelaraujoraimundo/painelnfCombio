@@ -80,7 +80,7 @@ export class AppComponent implements OnInit {
     '11': 'Digitalizado',
     '12': 'Suspenso Manual'
   };
-  filtroStatusErp: string = '';
+  filtroStatusErp: string[] = [];
   statusErpOptions: Array<any> = [];
 
   traduzirStatusErp(codigo: any): string {
@@ -102,7 +102,8 @@ export class AppComponent implements OnInit {
     return 'neutro';
   }
 
-  // Monta as opções do select com os status presentes no resultado (com contagem).
+  // Monta as opções do multiselect com os status presentes no resultado (com
+  // contagem) e já deixa TODOS selecionados por padrão.
   montarFiltroStatusErp(): void {
     const contagem = new Map<string, number>();
     this.itemsResponse.forEach(item => {
@@ -111,11 +112,10 @@ export class AppComponent implements OnInit {
         contagem.set(chave, (contagem.get(chave) || 0) + 1);
       }
     });
-    this.statusErpOptions = [{ label: 'Todos', value: '' }].concat(
-      Array.from(contagem.entries())
-        .sort((a, b) => Number(a[0]) - Number(b[0]))
-        .map(([codigo, qtd]) => ({ label: this.traduzirStatusErp(codigo) + ' (' + qtd + ')', value: codigo }))
-    );
+    this.statusErpOptions = Array.from(contagem.entries())
+      .sort((a, b) => Number(a[0]) - Number(b[0]))
+      .map(([codigo, qtd]) => ({ label: this.traduzirStatusErp(codigo) + ' (' + qtd + ')', value: codigo }));
+    this.filtroStatusErp = this.statusErpOptions.map(opcao => opcao.value);
   }
 
   aoMudarFiltroStatus(): void {
@@ -182,8 +182,12 @@ export class AppComponent implements OnInit {
     if (this.filtroSituacao) {
       lista = lista.filter(item => (item.cSitErp || 'Sem Situação') === this.filtroSituacao);
     }
-    if (this.filtroStatusErp !== '') {
-      lista = lista.filter(item => ('' + parseInt(item.erp_status, 10)) === this.filtroStatusErp);
+    if (this.statusErpOptions.length > 0) {
+      lista = lista.filter(item => {
+        const chave = '' + parseInt(item.erp_status, 10);
+        // Sem status válido não é penalizado; com status, precisa estar marcado.
+        return chave === 'NaN' ? true : this.filtroStatusErp.indexOf(chave) !== -1;
+      });
     }
     return lista;
   }
@@ -476,7 +480,7 @@ export class AppComponent implements OnInit {
       this.showTotalNf = false;
       this.situacaoCards = [];
       this.filtroSituacao = null;
-      this.filtroStatusErp = '';
+      this.filtroStatusErp = [];
       this.statusErpOptions = [];
       this.expandedRows.clear();
       this.paginaAtual = 1;
